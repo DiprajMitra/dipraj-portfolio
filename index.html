@@ -1,211 +1,312 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Personal Portfolio - Computer Science Student">
-    <title>Personal Portfolio | CS Student</title>
-    <!-- Google Fonts -->
+    <meta name="description" content="Dipraj Mitra Chandon — Computer Science student and developer building software, security tooling and AI experiments.">
+    <meta name="author" content="Dipraj Mitra Chandon">
+    <meta name="theme-color" content="#0b1120">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Dipraj Mitra Chandon — Software Engineer">
+    <meta property="og:description" content="Computer Science student building software, security tooling and AI experiments.">
+    <meta property="og:image" content="assets/images/preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <title>Dipraj Mitra Chandon — Software Engineer</title>
+
+    <!-- Fonts: Inter (Latin UI) + JetBrains Mono (code) + Noto Sans Bengali (Bangla) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Main CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons: inline SVG sprite (no render-blocking CDN) -->
     <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='monospace' font-weight='bold' fill='%236366f1'>D</text></svg>">
+
+    <!--
+      Resolve the theme and language BEFORE first paint.
+      Runs synchronously in <head> so there is no flash of the wrong theme
+      or the wrong font stack while the main script loads.
+    -->
+    <script>
+        (function () {
+            try {
+                // --- Theme ---
+                var saved = localStorage.getItem('portfolio.theme');
+                var mode = saved === 'light' || saved === 'dark'
+                    ? saved
+                    : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', mode);
+                document.documentElement.classList.add(mode === 'light' ? 'light-mode' : 'dark-mode');
+
+                // --- Language ---
+                var lang = localStorage.getItem('portfolio.lang');
+                if (lang !== 'bn' && lang !== 'en') {
+                    lang = (navigator.languages || [navigator.language || 'en'])
+                        .some(function (l) { return String(l).toLowerCase().slice(0, 2) === 'bn'; }) ? 'bn' : 'en';
+                }
+                document.documentElement.setAttribute('lang', lang);
+                document.documentElement.setAttribute('data-lang', lang);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-lang', 'en');
+            }
+        })();
+    </script>
 </head>
 <body class="dark-mode">
-    <!-- Loading Screen -->
-    <div id="loader" class="loader-wrapper">
-        <div class="terminal-loader">
-            <div class="terminal-header">
-                <div class="terminal-button red"></div>
-                <div class="terminal-button yellow"></div>
-                <div class="terminal-button green"></div>
-                <div class="terminal-title">bash — dipraj.dev — 80x24</div>
+
+    <!-- Inline SVG sprite — referenced via <use width="24" height="24" href="#icon-x"> -->
+    <svg class="svg-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.24 2.75.12 3.04.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></symbol>
+        <symbol id="icon-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05a3.75 3.75 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></symbol>
+        <symbol id="icon-twitter" viewBox="0 0 24 24"><path fill="currentColor" d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.21-6.82-5.96 6.82H1.68l7.73-8.84L1.25 2.25h6.82l4.71 6.23 5.46-6.23Zm-1.16 17.52h1.83L7.01 4.13H5.05l12.03 15.64Z"/></symbol>
+        <symbol id="icon-instagram" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16ZM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.71-2.12 1.38A5.9 5.9 0 0 0 .63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.71 1.46 1.38 2.12a5.9 5.9 0 0 0 2.12 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.71 2.12-1.38a5.9 5.9 0 0 0 1.38-2.12c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.12A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32Zm0 10.16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0Z"/></symbol>
+        <symbol id="icon-mail" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm0 1.5v.6l8 5 8-5v-.6M4 18.5V7.9l8 5 8-5v10.6"/></symbol>
+        <symbol id="icon-location" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+        <symbol id="icon-moon" viewBox="0 0 24 24"><path fill="currentColor" d="M21.64 13a1 1 0 0 1-1.05-.14 8.05 8.05 0 0 1-3.37 3.37A8.05 8.05 0 0 1 12 19a9 9 0 1 1 9.64-6 1 1 0 0 1 0 1Z"/></symbol>
+        <symbol id="icon-sun" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-1-13h2v3h-2V2Zm0 17h2v3h-2v-3ZM2 11h3v2H2v-2Zm17 0h3v2h-3v-2ZM4.22 5.64l1.42-1.42 2.12 2.12L6.34 7.76 4.22 5.64Zm12.02 12.02 1.42-1.42 2.12 2.12-1.42 1.42-2.12-2.12Zm2.12-13.44 1.42 1.42-2.12 2.12-1.42-1.42 2.12-2.12ZM6.34 16.24l1.42 1.42-2.12 2.12-1.42-1.42 2.12-2.12Z"/></symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+        <symbol id="icon-arrow-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+        <symbol id="icon-chevron-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+        <symbol id="icon-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6m0-6L10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+        <symbol id="icon-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m-5-5 5 5 5-5M4 19h16"/></symbol>
+        <symbol id="icon-copy" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 9h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1Zm-3 6H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m4 12.5 5 5L20 6.5"/></symbol>
+        <symbol id="icon-alert" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 9v5m0 3.5v.01M10.3 4.3 2.6 18a1.5 1.5 0 0 0 1.3 2.2h16.2a1.5 1.5 0 0 0 1.3-2.2L13.7 4.3a2 2 0 0 0-3.4 0Z"/></symbol>
+        <symbol id="icon-code" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10-3 12"/></symbol>
+        <symbol id="icon-terminal" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="m5 7 4 5-4 5m6 0h8"/></symbol>
+        <symbol id="icon-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 13.9 8l5.6 1.9-5.6 1.9L12 17.4l-1.9-5.6L4.5 9.9 10.1 8 12 2.5ZM19 15l.95 2.55L22.5 18.5l-2.55.95L19 22l-.95-2.55L15.5 18.5l2.55-.95L19 15Z"/></symbol>
+    </svg>
+
+    <!-- Scroll progress indicator -->
+    <div class="scroll-progress" role="progressbar" aria-label="Page progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="scroll-progress-bar"></span></div>
+
+    <!-- Skip link -->
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to main content</a>
+
+    <!-- Loading screen -->
+    <div id="loader" class="loader" role="status" aria-live="polite" aria-label="Loading">
+        <div class="terminal">
+            <div class="terminal__chrome">
+                <span class="terminal__dot terminal__dot--red"></span>
+                <span class="terminal__dot terminal__dot--yellow"></span>
+                <span class="terminal__dot terminal__dot--green"></span>
+                <span class="terminal__title" data-i18n="loader.title">bash — dipraj.dev — 80x24</span>
             </div>
-            <div class="terminal-body">
-                <div class="code-bg" id="code-bg"></div>
-                <div class="terminal-content">
-                    <div class="terminal-line">
-                        <span class="prompt">dipraj@engineer:~$</span> 
-                        <span id="loader-typed"></span><span class="cursor">_</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar-wrapper">
-                            <div class="progress-bar" id="loader-progress"></div>
-                        </div>
-                        <div class="progress-status">
-                            <span>Status: <span id="loader-status">Initializing</span></span>
-                            <span><span id="loader-percent">0</span>%</span>
-                        </div>
+            <div class="terminal__body">
+                <pre class="terminal__code" id="loader-code" aria-hidden="true"></pre>
+                <div class="terminal__prompt-line">
+                    <span class="terminal__prompt">dipraj@engineer:~$</span>
+                    <span id="loader-typed"></span><span class="terminal__caret" aria-hidden="true"></span>
+                </div>
+                <div class="terminal__log" id="loader-log" aria-hidden="true"></div>
+                <div class="terminal__progress">
+                    <div class="terminal__track"><span id="loader-progress"></span></div>
+                    <div class="terminal__status">
+                        <span>Status: <span id="loader-status" data-i18n="loader.status.init">Initializing</span></span>
+                        <span><span id="loader-percent">0</span>%</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Background Gradient -->
-    <div class="bg-gradient"></div>
+    <!-- Ambient background -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
 
-    <!-- Header / Navbar -->
-    <header class="header">
-        <nav class="navbar">
-            <a href="#home" class="logo">Dipraj<span>.dev</span></a>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="#projects" class="nav-link">Projects</a></li>
-                <li class="nav-item"><a href="#experience" class="nav-link">Experience</a></li>
-                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+    <!-- Header -->
+    <header class="header" id="site-header">
+        <nav class="navbar" aria-label="Primary">
+            <a href="#home" class="logo">
+                <span class="logo__mark" aria-hidden="true">&gt;_</span>
+                <span class="logo__text">dipraj<span class="logo__accent">.dev</span></span>
+            </a>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link" data-i18n="nav.home">Home</a></li>
+                <li><a href="#about" class="nav-link" data-i18n="nav.about">About</a></li>
+                <li><a href="#projects" class="nav-link" data-i18n="nav.projects">Projects</a></li>
+                <li><a href="#experience" class="nav-link" data-i18n="nav.experience">Experience</a></li>
+                <li><a href="#contact" class="nav-link" data-i18n="nav.contact">Contact</a></li>
             </ul>
+
             <div class="nav-actions">
-                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
-                    <i class="fas fa-moon"></i>
+                <button type="button" id="lang-toggle" class="lang-toggle" data-lang-switch aria-label="Switch language to Bangla">
+                    <span aria-hidden="true">বাং</span>
                 </button>
-                <div class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
+                <button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch to light mode">
+                    <svg class="icon icon--moon" aria-hidden="true"><use width="24" height="24" href="#icon-moon"/></svg>
+                    <svg class="icon icon--sun" aria-hidden="true"><use width="24" height="24" href="#icon-sun"/></svg>
+                </button>
+                <button type="button" id="menu-toggle" class="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </nav>
     </header>
 
-    <main>
-        <!-- Hero Section -->
+    <main id="main">
+
+        <!-- ============ HERO ============ -->
         <section id="home" class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h2 class="reveal">Hello, I'm</h2>
-                    <h1 class="reveal">Dipraj Mitra Chandon</h1>
-                    <h3 class="reveal">I'm a <span id="typing-text"></span></h3>
-                    <p class="reveal">A passionate Computer Science student dedicated to building innovative software solutions and exploring the world of AI and Web Development.</p>
-                    <div class="hero-btns reveal">
-                        <a href="#projects" class="btn btn-primary">View Projects</a>
-                        <a href="#contact" class="btn btn-secondary">Contact Me</a>
+            <div class="container hero__grid">
+                <div class="hero__content">
+                    <p class="hero__badge reveal" data-reveal>
+                        <span class="hero__pulse" aria-hidden="true"></span>
+                        <span data-i18n="hero.badge">Available for internships</span>
+                    </p>
+
+                    <p class="hero__greeting reveal" data-reveal data-i18n="hero.greeting">Hello, I'm</p>
+                    <h1 class="hero__name reveal" data-reveal data-i18n="hero.name">Dipraj Mitra Chandon</h1>
+                    <h2 class="hero__role">
+                        <span class="hero__role-prefix" aria-hidden="true">&gt;</span>
+                        <span id="typing-text" aria-live="off"></span>
+                        <span class="hero__caret" aria-hidden="true"></span>
+                    </h2>
+
+                    <p class="hero__bio reveal" data-reveal data-i18n="hero.bio">
+                        Computer Science student turning curiosity into working software — from algorithmic problem solving to security tooling and AI experiments.
+                    </p>
+
+                    <div class="hero__actions reveal" data-reveal>
+                        <a href="#projects" class="btn btn--primary">
+                            <span data-i18n="hero.cta.projects">View Projects</span>
+                            <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
+                        </a>
+                        <a href="#contact" class="btn btn--ghost">
+                            <span data-i18n="hero.cta.contact">Let's Talk</span>
+                        </a>
+                        <a href="assets/resume.pdf" class="btn btn--ghost" download>
+                            <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-download"/></svg>
+                            <span data-i18n="hero.cta.resume">Download Résumé</span>
+                        </a>
+                    </div>
+
+                    <dl class="stats reveal" data-reveal>
+                        <div class="stat">
+                            <dt data-i18n="stats.projects">Projects Shipped</dt>
+                            <dd><span class="counter" data-count="24">0</span>+</dd>
+                        </div>
+                        <div class="stat">
+                            <dt data-i18n="stats.problems">Problems Solved</dt>
+                            <dd><span class="counter" data-count="450">0</span>+</dd>
+                        </div>
+                        <div class="stat">
+                            <dt data-i18n="stats.commits">Commits</dt>
+                            <dd><span class="counter" data-count="1800">0</span>+</dd>
+                        </div>
+                        <div class="stat">
+                            <dt data-i18n="stats.languages">Languages</dt>
+                            <dd><span class="counter" data-count="6">0</span></dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="hero__visual reveal" data-reveal>
+                    <div class="hero__image-wrap">
+                        <img src="assets/images/dj.png" alt="Portrait of Dipraj Mitra Chandon" class="hero__img" width="420" height="420" data-i18n-attr="alt:hero.portrait">
+                    </div>
+                    <div class="hero__badge-float hero__badge-float--1" aria-hidden="true">
+                        <svg class="icon"><use width="24" height="24" href="#icon-code"/></svg><span>Java · C++</span>
+                    </div>
+                    <div class="hero__badge-float hero__badge-float--2" aria-hidden="true">
+                        <svg class="icon"><use width="24" height="24" href="#icon-terminal"/></svg><span>Linux · Git</span>
                     </div>
                 </div>
-                <div class="hero-image reveal">
-                    <img src="assets/images/dj.png" alt="Dipraj Mitra Chandon" class="profile-pic">
-                    <div class="blob"></div>
-                </div>
             </div>
-            <a href="#about" class="scroll-down">
-                <i class="fas fa-chevron-down"></i>
+
+            <a href="#about" class="scroll-hint" data-i18n-attr="aria-label:hero.scroll">
+                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-chevron-down"/></svg>
             </a>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="about">
+        <!-- ============ ABOUT ============ -->
+        <section id="about" class="section about">
             <div class="container">
-                <div class="section-title reveal">
-                    <h2>About Me</h2>
-                    <div class="underline"></div>
-                </div>
-                <div class="about-wrapper">
-                    <div class="about-text reveal">
-                        <p>I am currently pursuing my Bachelor's in Computer Science. I have a strong foundation in data structures, algorithms, and software engineering principles. My journey in tech started with curiosity about how things work under the hood, and it has evolved into a passion for creating efficient and scalable applications.</p>
-                        <p>When I'm not coding, you can find me learning about new technologies, participating in hackathons, or contributing to open-source projects.</p>
-                    </div>
-                    <div class="skills-container reveal">
-                        <h3>Technical Skills</h3>
-                        <div class="skills-grid">
-                            <div class="skill-card"><i class="fab fa-java"></i><span>Java</span></div>
-                            <div class="skill-card"><i class="fas fa-code"></i><span>C</span></div>
-                            <div class="skill-card"><i class="fas fa-file-code"></i><span>C++</span></div>
-                            <div class="skill-card"><i class="fab fa-js"></i><span>JavaScript</span></div>
-                            <div class="skill-card"><i class="fab fa-react"></i><span>React</span></div>
-                            <div class="skill-card"><i class="fab fa-html5"></i><span>HTML/CSS</span></div>
-                            <div class="skill-card"><i class="fas fa-database"></i><span>SQL</span></div>
-                            <div class="skill-card"><i class="fas fa-brain"></i><span>AI/ML</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                <header class="section-head reveal" data-reveal>
+                    <span class="section-head__eyebrow">01 / <span data-i18n="nav.about">About</span></span>
+                    <h2 class="section-head__title" data-i18n="about.title">About Me</h2>
+                    <p class="section-head__sub" data-i18n="about.subtitle">The person behind the terminal</p>
+                </header>
 
-        <!-- Projects Section -->
-        <section id="projects" class="projects">
-            <div class="container">
-                <div class="section-title reveal">
-                    <h2>Projects</h2>
-                    <div class="underline"></div>
-                </div>
-                <div class="projects-grid">
-                    <!-- Project 1: Spam.it -->
-                    <div class="project-card reveal">
-                        <div class="project-img">
-                            <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80" alt="Spam.it Project" loading="lazy">
-                            <div class="project-links">
-                                <a href="https://github.com/Dipraj2/Spam.it" target="_blank"><i class="fab fa-github"></i></a>
-                                <a href="https://github.com/Dipraj2/Spam.it" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                            </div>
-                        </div>
-                        <div class="project-info">
-                            <h3>Spam.it</h3>
-                            <p>An automated tool designed for comment spamming, demonstrating proficiency in scripting and automation.</p>
-                            <div class="tech-stack">
-                                <span>Python</span>
-                                <span>Automation</span>
-                                <span>Scripting</span>
-                            </div>
-                        </div>
+                <div class="about__grid">
+                    <div class="about__story reveal" data-reveal>
+                        <p data-i18n="about.p1"></p>
+                        <p data-i18n="about.p2"></p>
+
+                        <h3 class="about__principles-title" data-i18n="about.principles">How I Work</h3>
+                        <ul class="principles">
+                            <li class="principle">
+                                <span class="principle__icon" aria-hidden="true"><svg class="icon"><use width="24" height="24" href="#icon-spark"/></svg></span>
+                                <div>
+                                    <h3 data-i18n="about.principle1.title">First principles</h3>
+                                    <p data-i18n="about.principle1.body"></p>
+                                </div>
+                            </li>
+                            <li class="principle">
+                                <span class="principle__icon" aria-hidden="true"><svg class="icon"><use width="24" height="24" href="#icon-code"/></svg></span>
+                                <div>
+                                    <h3 data-i18n="about.principle2.title">Ship, then refine</h3>
+                                    <p data-i18n="about.principle2.body"></p>
+                                </div>
+                            </li>
+                            <li class="principle">
+                                <span class="principle__icon" aria-hidden="true"><svg class="icon"><use width="24" height="24" href="#icon-check"/></svg></span>
+                                <div>
+                                    <h3 data-i18n="about.principle3.title">Explain it clearly</h3>
+                                    <p data-i18n="about.principle3.body"></p>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <!-- Project 2: CP Helper -->
-                    <div class="project-card reveal">
-                        <div class="project-img">
-                            <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80" alt="CP Helper Project" loading="lazy">
-                            <div class="project-links">
-                                <a href="https://github.com/Dipraj2/Competitive_Programming_Helper-VS_CODE-" target="_blank"><i class="fab fa-github"></i></a>
-                                <a href="https://github.com/Dipraj2/Competitive_Programming_Helper-VS_CODE-" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+
+                    <div class="about__skills reveal" data-reveal>
+                        <h3 class="about__skills-title" data-i18n="about.skills.title">Technical Skills</h3>
+                        <p class="about__skills-sub" data-i18n="about.skills.subtitle">Languages, frameworks and tools I reach for</p>
+
+                        <div class="skill-groups">
+                            <div class="skill-group">
+                                <h4 data-i18n="skills.langs">Languages</h4>
+                                <div class="chips">
+                                    <span class="chip">Java</span>
+                                    <span class="chip">C</span>
+                                    <span class="chip">C++</span>
+                                    <span class="chip">Python</span>
+                                    <span class="chip">JavaScript</span>
+                                    <span class="chip">SQL</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="project-info">
-                            <h3>CP Helper (VS Code)</h3>
-                            <p>A comprehensive setup for competitive programming in C++, optimized for the VS Code environment.</p>
-                            <div class="tech-stack">
-                                <span>C++</span>
-                                <span>VS Code</span>
-                                <span>Config</span>
+                            <div class="skill-group">
+                                <h4 data-i18n="skills.web">Web &amp; Frameworks</h4>
+                                <div class="chips">
+                                    <span class="chip">HTML5</span>
+                                    <span class="chip">CSS3</span>
+                                    <span class="chip">React</span>
+                                    <span class="chip">Node.js</span>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Project 3: picoCTF 2025 -->
-                    <div class="project-card reveal">
-                        <div class="project-img">
-                            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" alt="picoCTF Writeups" loading="lazy">
-                            <div class="project-links">
-                                <a href="https://github.com/Dipraj2/picoCTF2025" target="_blank"><i class="fab fa-github"></i></a>
-                                <a href="https://github.com/Dipraj2/picoCTF2025" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                            <div class="skill-group">
+                                <h4 data-i18n="skills.data">Data &amp; AI</h4>
+                                <div class="chips">
+                                    <span class="chip">AI/ML</span>
+                                    <span class="chip">NumPy</span>
+                                    <span class="chip">Pandas</span>
+                                    <span class="chip">MySQL</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="project-info">
-                            <h3>picoCTF 2025 Writeups</h3>
-                            <p>Detailed walkthroughs and solutions for the picoCTF 2025 cybersecurity challenges.</p>
-                            <div class="tech-stack">
-                                <span>Security</span>
-                                <span>CTF</span>
-                                <span>Writeups</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Project 4: LeetCode Solutions -->
-                    <div class="project-card reveal">
-                        <div class="project-img">
-                            <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&w=800&q=80" alt="LeetCode Solutions" loading="lazy">
-                            <div class="project-links">
-                                <a href="https://github.com/Dipraj2/LeetCode_Solution_Dipraj" target="_blank"><i class="fab fa-github"></i></a>
-                                <a href="https://github.com/Dipraj2/LeetCode_Solution_Dipraj" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                            </div>
-                        </div>
-                        <div class="project-info">
-                            <h3>LeetCode Solutions</h3>
-                            <p>A collection of optimized solutions for various LeetCode problems, showcasing algorithmic skills.</p>
-                            <div class="tech-stack">
-                                <span>Algorithms</span>
-                                <span>DSA</span>
-                                <span>Problem Solving</span>
+                            <div class="skill-group">
+                                <h4 data-i18n="skills.tools">Tools &amp; Platforms</h4>
+                                <div class="chips">
+                                    <span class="chip">Git</span>
+                                    <span class="chip">GitHub</span>
+                                    <span class="chip">VS Code</span>
+                                    <span class="chip">Linux</span>
+                                    <span class="chip">Vercel</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -213,78 +314,237 @@
             </div>
         </section>
 
-        <!-- Experience/Education Section -->
-        <section id="experience" class="experience">
+        <!-- ============ PROJECTS ============ -->
+        <section id="projects" class="section projects">
             <div class="container">
-                <div class="section-title reveal">
-                    <h2>Education & Experience</h2>
-                    <div class="underline"></div>
+                <header class="section-head reveal" data-reveal>
+                    <span class="section-head__eyebrow">02 / <span data-i18n="nav.projects">Projects</span></span>
+                    <h2 class="section-head__title" data-i18n="projects.title">Projects</h2>
+                    <p class="section-head__sub" data-i18n="projects.subtitle">Things I have built, broken and rebuilt</p>
+                </header>
+
+                <div class="filters reveal" data-reveal role="group" aria-label="Filter projects">
+                    <button type="button" class="filter is-active" data-filter="all" data-i18n="projects.filter.all">All</button>
+                    <button type="button" class="filter" data-filter="tools" data-i18n="projects.filter.tools">Tools</button>
+                    <button type="button" class="filter" data-filter="web" data-i18n="projects.filter.web">Web</button>
+                    <button type="button" class="filter" data-filter="security" data-i18n="projects.filter.security">Security</button>
+                    <button type="button" class="filter" data-filter="algorithms" data-i18n="projects.filter.algorithms">Algorithms</button>
                 </div>
-                <div class="timeline">
-                    <div class="timeline-item reveal">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-date">2024 - Present</div>
-                        <div class="timeline-content">
-                            <h3>B.S. Computer Science</h3>
-                            <h4>University of Asia Pacific</h4>
-                            <p>Focusing on software engineering, distributed systems, and artificial intelligence. Dean's List for last semesters.</p>
+
+                <div class="project-grid" id="project-grid">
+                    <article class="project reveal" data-reveal data-category="tools">
+                        <div class="project__media">
+                            <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80" alt="Spam.it project screenshot" loading="lazy" width="900" height="600">
+                            <span class="project__cat">Automation</span>
                         </div>
-                    </div>
-                    <div class="timeline-item reveal">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-date">2021 - 2022</div>
-                        <div class="timeline-content">
-                            <h3>Higher Secondary Certificate</h3>
-                            <h4>Amrita Lal Dey College</h4>
-                            <p>Completed HSC in Science with GPA5.</p>
+                        <div class="project__body">
+                            <h3 class="project__title" data-i18n="projects.p1.title">Spam.it</h3>
+                            <p class="project__desc" data-i18n="projects.p1.body"></p>
+                            <ul class="tags">
+                                <li>Python</li><li>Automation</li><li>Scripting</li>
+                            </ul>
+                            <a class="project__link" href="https://github.com/Dipraj2/Spam.it" target="_blank" rel="noopener noreferrer">
+                                <span data-i18n="projects.view">View repository</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            </a>
                         </div>
-                    </div>
-                    <div class="timeline-item reveal">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-date">2019 - 2020</div>
-                        <div class="timeline-content">
-                            <h3>High School Graduation</h3>
-                            <h4>Government Swarupkati Pilot Model Secondary School</h4>
-                            <p>Completed SSC in Science with GPA5.</p>
+                    </article>
+
+                    <article class="project reveal" data-reveal data-category="tools">
+                        <div class="project__media">
+                            <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=900&q=80" alt="CP Helper VS Code setup" loading="lazy" width="900" height="600">
+                            <span class="project__cat">Developer Tool</span>
                         </div>
-                    </div>
+                        <div class="project__body">
+                            <h3 class="project__title" data-i18n="projects.p2.title">CP Helper (VS Code)</h3>
+                            <p class="project__desc" data-i18n="projects.p2.body"></p>
+                            <ul class="tags">
+                                <li>C++</li><li>VS Code</li><li>Config</li>
+                            </ul>
+                            <a class="project__link" href="https://github.com/Dipraj2/Competitive_Programming_Helper-VS_CODE-" target="_blank" rel="noopener noreferrer">
+                                <span data-i18n="projects.view">View repository</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="project reveal" data-reveal data-category="security">
+                        <div class="project__media">
+                            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=80" alt="Cybersecurity writeups" loading="lazy" width="900" height="600">
+                            <span class="project__cat">Security</span>
+                        </div>
+                        <div class="project__body">
+                            <h3 class="project__title" data-i18n="projects.p3.title">picoCTF 2025 Writeups</h3>
+                            <p class="project__desc" data-i18n="projects.p3.body"></p>
+                            <ul class="tags">
+                                <li>CTF</li><li>Security</li><li>Writeups</li>
+                            </ul>
+                            <a class="project__link" href="https://github.com/Dipraj2/picoCTF2025" target="_blank" rel="noopener noreferrer">
+                                <span data-i18n="projects.view">View repository</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="project reveal" data-reveal data-category="algorithms">
+                        <div class="project__media">
+                            <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&w=900&q=80" alt="LeetCode solutions repository" loading="lazy" width="900" height="600">
+                            <span class="project__cat">Algorithms</span>
+                        </div>
+                        <div class="project__body">
+                            <h3 class="project__title" data-i18n="projects.p4.title">LeetCode Solutions</h3>
+                            <p class="project__desc" data-i18n="projects.p4.body"></p>
+                            <ul class="tags">
+                                <li>DSA</li><li>Algorithms</li><li>Problem Solving</li>
+                            </ul>
+                            <a class="project__link" href="https://github.com/Dipraj2/LeetCode_Solution_Dipraj" target="_blank" rel="noopener noreferrer">
+                                <span data-i18n="projects.view">View repository</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            </a>
+                        </div>
+                    </article>
                 </div>
+
+                <p class="projects__empty" id="projects-empty" hidden data-i18n="projects.empty">No projects in this category yet.</p>
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="contact">
+        <!-- ============ EXPERIENCE ============ -->
+        <section id="experience" class="section experience">
             <div class="container">
-                <div class="section-title reveal">
-                    <h2>Get In Touch</h2>
-                    <div class="underline"></div>
-                </div>
-                <div class="contact-wrapper">
-                    <div class="contact-info reveal">
-                        <h3>Let's Talk!</h3>
-                        <p>I'm currently looking for internship opportunities. If you have any questions or just want to say hi, feel free to drop a message!</p>
-                        <div class="contact-details">
-                            <div class="detail"><i class="fas fa-envelope"></i><span>dipraj.mitra123@gmail.com</span></div>
-                            <div class="detail"><i class="fas fa-map-marker-alt"></i><span>Kazipara, Dhaka, Bangladesh</span></div>
+                <header class="section-head reveal" data-reveal>
+                    <span class="section-head__eyebrow">03 / <span data-i18n="nav.experience">Experience</span></span>
+                    <h2 class="section-head__title" data-i18n="exp.title">Education &amp; Experience</h2>
+                    <p class="section-head__sub" data-i18n="exp.subtitle">Where the fundamentals came from</p>
+                </header>
+
+                <ol class="timeline">
+                    <li class="timeline__item reveal" data-reveal>
+                        <span class="timeline__dot" aria-hidden="true"></span>
+                        <div class="timeline__meta">
+                            <span class="timeline__date">2024 — <span data-i18n="exp.present">Present</span></span>
                         </div>
-                        <div class="social-icons">
-                            <a href="https://github.com/Dipraj2"><i class="fab fa-github"></i></a>
-                            <a href="https://www.linkedin.com/in/dipraj-mitra/"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://x.com/DiprajMitra_007"><i class="fab fa-twitter"></i></a>
-                            <a href="https://www.instagram.com/diprajmitra123/"><i class="fab fa-instagram"></i></a>
+                        <div class="timeline__card">
+                            <h3 data-i18n="exp.degree">B.S. Computer Science</h3>
+                            <p class="timeline__org">University of Asia Pacific</p>
+                            <p data-i18n="exp.degree.body"></p>
                         </div>
+                    </li>
+                    <li class="timeline__item reveal" data-reveal>
+                        <span class="timeline__dot" aria-hidden="true"></span>
+                        <div class="timeline__meta">
+                            <span class="timeline__date">2021 — 2022</span>
+                        </div>
+                        <div class="timeline__card">
+                            <h3 data-i18n="exp.hsc">Higher Secondary Certificate</h3>
+                            <p class="timeline__org">Amrita Lal Dey College</p>
+                            <p data-i18n="exp.hsc.body"></p>
+                        </div>
+                    </li>
+                    <li class="timeline__item reveal" data-reveal>
+                        <span class="timeline__dot" aria-hidden="true"></span>
+                        <div class="timeline__meta">
+                            <span class="timeline__date">2019 — 2020</span>
+                        </div>
+                        <div class="timeline__card">
+                            <h3 data-i18n="exp.ssc">High School Graduation</h3>
+                            <p class="timeline__org">Government Swarupkati Pilot Model Secondary School</p>
+                            <p data-i18n="exp.ssc.body"></p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ============ CONTACT ============ -->
+        <section id="contact" class="section contact">
+            <div class="container">
+                <header class="section-head reveal" data-reveal>
+                    <span class="section-head__eyebrow">04 / <span data-i18n="nav.contact">Contact</span></span>
+                    <h2 class="section-head__title" data-i18n="contact.title">Get In Touch</h2>
+                    <p class="section-head__sub" data-i18n="contact.subtitle">Open to internships, collaborations and interesting problems</p>
+                </header>
+
+                <div class="contact__grid">
+                    <div class="contact__info reveal" data-reveal>
+                        <h3 data-i18n="contact.heading">Let's Talk</h3>
+                        <p data-i18n="contact.body"></p>
+
+                        <ul class="contact__details">
+                            <li>
+                                <span class="contact__icon" aria-hidden="true"><svg class="icon"><use width="24" height="24" href="#icon-mail"/></svg></span>
+                                <div>
+                                    <span class="contact__label" data-i18n="contact.email">Email</span>
+                                    <a href="mailto:dipraj.mitra123@gmail.com" id="email-link">dipraj.mitra123@gmail.com</a>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="contact__icon" aria-hidden="true"><svg class="icon"><use width="24" height="24" href="#icon-location"/></svg></span>
+                                <div>
+                                    <span class="contact__label" data-i18n="contact.location">Location</span>
+                                    <span>Kazipara, Dhaka, Bangladesh</span>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <button type="button" class="btn btn--ghost btn--sm" id="copy-email">
+                            <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-copy"/></svg>
+                            <span data-i18n="contact.form.copy">Copy email</span>
+                        </button>
+
+                        <ul class="socials">
+                            <li><a href="https://github.com/Dipraj2" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="icon"><use width="24" height="24" href="#icon-github"/></svg></a></li>
+                            <li><a href="https://www.linkedin.com/in/dipraj-mitra/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg class="icon"><use width="24" height="24" href="#icon-linkedin"/></svg></a></li>
+                            <li><a href="https://x.com/DiprajMitra_007" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><svg class="icon"><use width="24" height="24" href="#icon-twitter"/></svg></a></li>
+                            <li><a href="https://www.instagram.com/diprajmitra123/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg class="icon"><use width="24" height="24" href="#icon-instagram"/></svg></a></li>
+                        </ul>
+
+                        <p class="contact__available">
+                            <span class="contact__pulse" aria-hidden="true"></span>
+                            <span data-i18n="contact.available">Typically replies within a day</span>
+                        </p>
                     </div>
-                    <form class="contact-form reveal" id="contact-form">
-                        <div class="form-group">
-                            <input type="text" name="name" placeholder="Name" required>
+
+                    <form class="contact__form reveal" data-reveal id="contact-form" novalidate>
+                        <div class="field">
+                            <label for="cf-name" data-i18n="contact.form.name">Your name</label>
+                            <input type="text" id="cf-name" name="name" autocomplete="name" required
+                                   data-i18n-attr="placeholder:contact.form.name">
+                            <span class="field__error" data-error-for="cf-name"></span>
                         </div>
-                        <div class="form-group">
-                            <input type="email" name="email" placeholder="Email" required>
+
+                        <div class="field">
+                            <label for="cf-email" data-i18n="contact.form.email">Your email</label>
+                            <input type="email" id="cf-email" name="email" autocomplete="email" required
+                                   data-i18n-attr="placeholder:contact.form.email">
+                            <span class="field__error" data-error-for="cf-email"></span>
                         </div>
-                        <div class="form-group">
-                            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+
+                        <div class="field">
+                            <label for="cf-subject" data-i18n="contact.form.subject">Subject</label>
+                            <input type="text" id="cf-subject" name="subject"
+                                   data-i18n-attr="placeholder:contact.form.subject">
                         </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
+
+                        <div class="field">
+                            <label for="cf-message" data-i18n="contact.form.message">Your message</label>
+                            <textarea id="cf-message" name="message" rows="5" required
+                                      data-i18n-attr="placeholder:contact.form.message"></textarea>
+                            <span class="field__error" data-error-for="cf-message"></span>
+                        </div>
+
+                        <!-- Honeypot — bots fill this, humans never see it -->
+                        <div class="hp" aria-hidden="true">
+                            <label for="cf-company" data-i18n="contact.form.honeypot">Leave this field empty.</label>
+                            <input type="text" id="cf-company" name="_gotcha" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <button type="submit" class="btn btn--primary btn--block" id="cf-submit">
+                            <span data-i18n="contact.form.submit">Send Message</span>
+                            <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
+                        </button>
+
+                        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
                     </form>
                 </div>
             </div>
@@ -293,12 +553,21 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 Dipraj Mitra Chandon. Built with <i class="fas fa-heart"></i> and Passion.</p>
+        <div class="container footer__inner">
+            <p class="footer__copy">
+                &copy; <span id="year">2026</span> <span data-i18n="footer.name">Dipraj Mitra Chandon</span>. <span data-i18n="footer.built">Built with love and too much coffee.</span>
+            </p>
+            <a href="#home" class="footer__top">
+                <span data-i18n="footer.backToTop">Back to top</span>
+                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-up"/></svg>
+            </a>
         </div>
     </footer>
 
-    <!-- Main JS -->
+    <!-- Toast -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/i18n.js"></script>
     <script src="assets/js/script.js"></script>
 </body>
 </html>
