@@ -22,7 +22,7 @@
             'meta.title': 'Dipraj Mitra Chandon — Software Engineer',
 
             /* ---- loader ---- */
-            'loader.title': 'bash — dipraj.dev — 80x24',
+            'loader.title': 'bash — dipraj.bond — 80x24',
             'loader.status.init': 'Initializing',
             'loader.status.modules': 'Loading core modules',
             'loader.status.network': 'Establishing secure connection',
@@ -151,7 +151,7 @@
             'meta.title': 'দ্বীপরাজ মিত্র চন্দন — সফটওয়্যার ইঞ্জিনিয়ার',
 
             /* ---- loader ---- */
-            'loader.title': 'bash — dipraj.dev — 80x24',
+            'loader.title': 'bash — dipraj.bond — 80x24',
             'loader.status.init': 'শুরু হচ্ছে',
             'loader.status.modules': 'মূল মডিউল লোড হচ্ছে',
             'loader.status.network': 'নিরাপদ সংযোগ স্থাপন হচ্ছে',

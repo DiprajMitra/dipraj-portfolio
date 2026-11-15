@@ -621,6 +621,13 @@ html.dark-mode .bg-grid { opacity: 0.42; }
     box-shadow: var(--shadow-md);
 }
 
+/*
+ * The navbar carries the `container` class so it lines up exactly with
+ * the page content column (same max-width, same inline padding). Without
+ * it the header stretched edge-to-edge while the body content was
+ * capped, leaving the logo hard against x=0 and the theme button
+ * clipped at the right edge.
+ */
 .navbar {
     display: flex;
     align-items: center;
@@ -656,6 +663,23 @@ html.dark-mode .bg-grid { opacity: 0.42; }
     display: flex;
     align-items: center;
     gap: 0.35rem;
+}
+
+/*
+ * True centring: the logo (left) and actions (right) have different
+ * widths, so `space-between` leaves the menu off-centre by half the
+ * difference. Pinning the menu to the container's centre line fixes it.
+ */
+@media (min-width: 861px) {
+    .navbar {
+        position: relative;
+    }
+
+    .nav-menu {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 .nav-link {
@@ -724,6 +748,22 @@ html.dark-mode .bg-grid { opacity: 0.42; }
     font-weight: 600;
 }
 
+/*
+ * Icon buttons size their glyph in absolute pixels. The global `.icon`
+ * rule is `1.15em`, which resolves against the button's inherited
+ * font-size and rendered the sun/moon at ~19px inside a 40px button.
+ */
+.icon-btn {
+    font-size: 20px;
+    line-height: 0;
+}
+
+.icon-btn .icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
 .icon-btn:hover,
 .lang-toggle:hover {
     color: var(--accent);
@@ -731,7 +771,15 @@ html.dark-mode .bg-grid { opacity: 0.42; }
     transform: translateY(-2px);
 }
 
-/* Theme icon swap */
+/*
+ * Theme icon swap — both glyphs occupy the same grid cell so the
+ * button never reflows when the theme changes.
+ */
+.icon-btn .icon--sun,
+.icon-btn .icon--moon {
+    grid-area: 1 / 1;
+}
+
 .icon-btn .icon--sun { display: none; }
 body.light-mode .icon-btn .icon--moon,
 html.light-mode .icon-btn .icon--moon { display: none; }
