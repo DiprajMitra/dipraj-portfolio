@@ -1997,6 +1997,29 @@ html[data-lang='bn'] .field label {
     color: var(--text-muted);
 }
 
+/* rel="me" identity links — the HTML-side counterpart to the JSON-LD
+   sameAs graph. Plain text links, not icons, so they read as profiles
+   rather than as another row of social glyphs. */
+.footer__me {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-sm);
+}
+
+.footer__me a {
+    color: var(--text-muted);
+    transition: color var(--dur-fast) var(--ease-out);
+}
+
+.footer__me a:hover {
+    color: var(--accent);
+}
+
 .footer__top {
     display: inline-flex;
     align-items: center;
@@ -2152,6 +2175,8 @@ html[data-lang='bn'] .field label {
     .timeline__dot { left: -1.75rem; }
 
     .footer__inner { flex-direction: column; text-align: center; }
+
+    .footer__me { justify-content: center; }
 
     .terminal__body { padding: 1.25rem; min-height: 220px; }
     .terminal__code { inset: 1rem 1.25rem; }

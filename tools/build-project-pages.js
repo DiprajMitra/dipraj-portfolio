@@ -59,6 +59,32 @@ const jsonLd = (obj) => JSON.stringify(obj, null, 2)
 const abs = (rel) => site.origin + rel;
 const OG_IMAGE = abs('/assets/images/preview.png');
 
+/**
+ * The one list of identity profiles.
+ *
+ * It feeds two things: the JSON-LD `sameAs` graph (which lets a search
+ * engine match this person to the accounts) and the visible rel="me"
+ * links in the footer (the HTML-side equivalent, which lets a crawler
+ * match them without parsing the schema). One source, so the two can
+ * never drift apart.
+ */
+const IDENTITIES = [
+    { label: 'GitHub', url: 'https://github.com/DiprajMitra' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/dipraj-mitra/' },
+    { label: 'X', url: 'https://x.com/DiprajMitra_007' },
+    { label: 'Instagram', url: 'https://www.instagram.com/diprajmitra123/' },
+    // Competitive programming identity. This is the handle that ties
+    // name searches to the algorithmic work, so it belongs in the
+    // graph alongside the social profiles.
+    { label: 'Codeforces', url: 'https://codeforces.com/profile/dipraj_007' },
+    { label: 'Virtual Judge', url: 'https://vjudge.net/user/dipraj007' },
+];
+
+/** The rel="me" identity row, rendered into every page footer. */
+const identityRow = () => `            <ul class="footer__me" aria-label="Profiles">
+${IDENTITIES.map((i) => `                <li><a rel="me noopener noreferrer" href="${i.url}" target="_blank">${esc(i.label)}</a></li>`).join('\n')}
+            </ul>`;
+
 function assertSeo(p) {
     const t = p.metaTitle.length;
     const d = p.metaDescription.length;
@@ -100,17 +126,7 @@ function personSchema() {
             'JavaScript',
             'Automation',
         ],
-        sameAs: [
-            'https://github.com/DiprajMitra',
-            'https://www.linkedin.com/in/dipraj-mitra/',
-            'https://x.com/DiprajMitra_007',
-            'https://www.instagram.com/diprajmitra123/',
-            // Competitive programming identity. This is the handle that ties
-            // name searches to the algorithmic work, so it belongs in the
-            // graph alongside the social profiles.
-            'https://codeforces.com/profile/dipraj_007',
-            'https://vjudge.net/user/dipraj007',
-        ],
+        sameAs: IDENTITIES.map((i) => i.url),
     };
 }
 
@@ -403,6 +419,7 @@ ${p.tech.map((t) => `                    <li>${esc(t)}</li>`).join('\n')}
             <p class="footer__copy">
                 &copy; <span id="year">2026</span> ${esc(site.authorFull)}. <span data-i18n="footer.built">Built with love and too much coffee.</span>
             </p>
+${identityRow()}
             <a href="/#home" class="footer__top">
                 <span data-i18n="footer.backToTop">Back to top</span>
                 <svg class="icon" aria-hidden="true"><use href="#icon-arrow-up"/></svg>
@@ -697,6 +714,7 @@ ${renderBlocks(post.body)}
             <p class="footer__copy">
                 &copy; <span id="year">2026</span> ${esc(site.authorFull)}. <span data-i18n="footer.built">Built with love and too much coffee.</span>
             </p>
+${identityRow()}
             <a href="/#home" class="footer__top">
                 <span data-i18n="footer.backToTop">Back to top</span>
                 <svg class="icon" aria-hidden="true"><use href="#icon-arrow-up"/></svg>
@@ -781,6 +799,18 @@ const homeSchema = {
             inLanguage: 'en',
             publisher: { '@id': site.origin + '/#person' },
             author: { '@id': site.origin + '/#person' },
+            // Tells a search engine what the site offers as an entry point
+            // beyond the homepage: the project index and the blog feed.
+            potentialAction: [
+                {
+                    '@type': 'ReadAction',
+                    target: abs('/#projects'),
+                },
+                {
+                    '@type': 'ReadAction',
+                    target: abs('/feed.xml'),
+                },
+            ],
         },
         {
             '@type': 'ItemList',
@@ -803,6 +833,12 @@ const homeSchema = {
             inLanguage: 'en',
             author: { '@id': site.origin + '/#person' },
             publisher: { '@id': site.origin + '/#person' },
+            // The RSS feed is a first-class entry point for the blog, so it
+            // is named in the schema as well as in the page head.
+            potentialAction: {
+                '@type': 'ReadAction',
+                target: abs('/feed.xml'),
+            },
             blogPost: POSTS.map((post) => ({
                 '@type': 'BlogPosting',
                 '@id': abs(`/blog/${post.slug}/`) + '#post',

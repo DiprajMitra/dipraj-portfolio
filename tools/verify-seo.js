@@ -221,6 +221,12 @@ fs.mkdirSync(SHOT_DIR, { recursive: true });
                 textLength: document.body.innerText.trim().length,
                 // Links that resolve to a real project route
                 projectLinks: [...document.querySelectorAll('a[href^="/projects/"]')].map((a) => a.getAttribute('href')),
+                // The Person node's sameAs graph, and the visible rel="me"
+                // links. These two must name the same profiles — one is the
+                // machine-readable identity, the other the human-readable
+                // one, and a crawler that sees them disagree trusts neither.
+                sameAs: flat.find((n) => n['@type'] === 'Person')?.sameAs || [],
+                relMe: [...document.querySelectorAll('a[rel~="me"]')].map((a) => a.href),
             };
         });
 
@@ -281,6 +287,25 @@ fs.mkdirSync(SHOT_DIR, { recursive: true });
         if (audit.landmarks.main !== 1) problems.push(`<main> count = ${audit.landmarks.main}`);
         if (audit.landmarks.banner !== 1) problems.push(`banner landmark count = ${audit.landmarks.banner}`);
         if (vitals.cls > 0.1) problems.push(`CLS ${vitals.cls} > 0.1`);
+
+        /* The rel="me" links must name the same profiles as the Person
+           node's sameAs graph. Where both are present they have to agree;
+           where the page carries no Person node (project/blog pages) the
+           rel="me" links must still be there, because they are the only
+           machine-readable link back to the author's profiles. */
+        if (audit.relMe.length === 0) {
+            problems.push('no rel="me" identity links');
+        }
+        for (const url of audit.relMe) {
+            if (!url.startsWith('http')) problems.push(`rel="me" link is not absolute: ${url}`);
+        }
+        if (audit.sameAs.length) {
+            for (const url of audit.sameAs) {
+                if (!audit.relMe.includes(url)) {
+                    problems.push(`sameAs "${url}" has no matching rel="me" link`);
+                }
+            }
+        }
 
         // Cross-page uniqueness: two routes sharing a <title> or a canonical
         // means one of them will be dropped from the index as a duplicate.

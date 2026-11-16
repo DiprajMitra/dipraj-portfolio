@@ -820,6 +820,20 @@
             <p class="footer__copy">
                 &copy; <span id="year">2026</span> <span data-i18n="footer.name">Dipraj Mitra Chandon</span>. <span data-i18n="footer.built">Built with love and too much coffee.</span>
             </p>
+            <!--
+                rel="me" identity links. The JSON-LD sameAs graph already names
+                these profiles, but rel="me" is the HTML-side equivalent that
+                lets a crawler match the person to the accounts without
+                parsing the schema. Both lists are the same set.
+            -->
+            <ul class="footer__me" aria-label="Profiles">
+                <li><a rel="me noopener noreferrer" href="https://github.com/DiprajMitra" target="_blank">GitHub</a></li>
+                <li><a rel="me noopener noreferrer" href="https://www.linkedin.com/in/dipraj-mitra/" target="_blank">LinkedIn</a></li>
+                <li><a rel="me noopener noreferrer" href="https://x.com/DiprajMitra_007" target="_blank">X</a></li>
+                <li><a rel="me noopener noreferrer" href="https://www.instagram.com/diprajmitra123/" target="_blank">Instagram</a></li>
+                <li><a rel="me noopener noreferrer" href="https://codeforces.com/profile/dipraj_007" target="_blank">Codeforces</a></li>
+                <li><a rel="me noopener noreferrer" href="https://vjudge.net/user/dipraj007" target="_blank">Virtual Judge</a></li>
+            </ul>
             <a href="#home" class="footer__top">
                 <span data-i18n="footer.backToTop">Back to top</span>
                 <svg class="icon" aria-hidden="true"><use href="#icon-arrow-up"/></svg>
