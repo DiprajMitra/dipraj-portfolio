@@ -127,14 +127,38 @@ fs.mkdirSync(SHOT_DIR, { recursive: true });
 
         const consoleIssues = [];
         const failedRequests = [];
+
+        /* The Vercel Web Analytics tracker is served from Vercel's edge at
+           /_vercel/insights/script.js, not from the static output. It only
+           exists on a real deployment, so against a local server the request
+           always 404s. That is expected, not a defect, so it is filtered out
+           of both the console and the failed-request checks.
+           The console message for a failed resource does not carry the URL in
+           its text, so the request URL is read from the message location. */
+        const isVercelInsights = (text) => text.includes('/_vercel/insights/script.js');
+        const isVercelInsightsMsg = (msg) => {
+            const loc = msg.location();
+            if (loc && loc.url && isVercelInsights(loc.url)) return true;
+            return isVercelInsights(msg.text());
+        };
+
         page.on('console', (msg) => {
             if (msg.type() === 'error' || msg.type() === 'warning') {
+                if (isVercelInsightsMsg(msg)) return;
                 consoleIssues.push(`[${msg.type()}] ${msg.text()}`);
             }
         });
         page.on('pageerror', (err) => consoleIssues.push(`[pageerror] ${err.message}`));
         page.on('requestfailed', (req) => {
-            failedRequests.push(`${req.method()} ${req.url()} — ${req.failure()?.errorText}`);
+            const url = req.url();
+            if (isVercelInsights(url)) return;
+            failedRequests.push(`${req.method()} ${url} — ${req.failure()?.errorText}`);
+        });
+        page.on('response', (res) => {
+            if (res.status() < 400) return;
+            const url = res.url();
+            if (isVercelInsights(url)) return;
+            failedRequests.push(`GET ${url} — HTTP ${res.status()}`);
         });
 
         const response = await page.goto(BASE + route.path, { waitUntil: 'networkidle' });
