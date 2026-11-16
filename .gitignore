@@ -4,6 +4,10 @@ node_modules/
 dist/
 build/
 
+# Build output — the deployable site is generated into public/ by
+# tools/build-project-pages.js (see vercel.json#outputDirectory)
+public/
+
 # SEO tooling artifacts
 .seo-shots/
 package-lock.json

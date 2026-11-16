@@ -52,8 +52,11 @@ is individually indexable rather than hidden behind a modal.
 - Breadcrumb navigation with `aria-label` and `aria-current="page"`
 
 **Single source of truth:** all project metadata lives in
-[`assets/js/projects.js`](assets/js/projects.js). The detail pages and
-`sitemap.xml` are generated from it — they can never drift apart.
+[`assets/js/projects.js`](assets/js/projects.js). The detail pages, the
+`sitemap.xml` and the homepage JSON-LD `ItemList` are all generated from it —
+they can never drift apart. The homepage carries a `<!--BUILD:HOME_SCHEMA-->`
+marker that the build replaces with the `Person` + `WebSite` + `ItemList`
+graph.
 
 ### Project registry
 
@@ -76,17 +79,26 @@ is individually indexable rather than hidden behind a modal.
 
 ```bash
 npm install          # playwright-core, for verification only
-npm run build        # regenerate projects/*/index.html + sitemap.xml
-npm run serve        # http://localhost:8099
+npm run build        # generate the deployable site into public/
+npm run serve        # http://localhost:8099 (serves public/)
 npm run verify:seo   # headless Chrome audit of every route
 npm run check        # build + verify
 ```
+
+The build writes the **entire deployable site into `public/`** — the homepage,
+the four project pages, `sitemap.xml`, `robots.txt` and the `assets/` tree.
+`public/` is Vercel's output directory (`vercel.json#outputDirectory`), so only
+site content is published; `package.json`, `tools/` and the README stay out of
+the deployed tree. `public/` is generated, gitignored, and rebuilt from scratch
+on every run.
 
 `verify:seo` asserts, for each route: HTTP 200, clean console, valid JSON-LD
 with the expected schema types, exactly one `<h1>`, no heading-level skips,
 `alt` + `width`/`height` on every image, absolute OG/Twitter image URLs, unique
 `<title>` and canonical across all pages, CLS < 0.1, and that every
-`/projects/` link resolves. Screenshots land in `.seo-shots/`.
+`/projects/` link resolves. It also checks that `/robots.txt` and `/sitemap.xml`
+are served and that the sitemap lists every route. Screenshots land in
+`.seo-shots/`.
 
 > **Note:** the project pages set `data-page-meta="static"` on `<body>`, which
 > tells the i18n layer *not* to overwrite their `<title>` with the homepage's.
@@ -143,18 +155,18 @@ dipraj-portfolio/
 │       ├── i18n.js        # EN/BN translation layer
 │       ├── projects.js    # Project registry (single source of truth)
 │       └── script.js      # Behaviour modules
-├── projects/
-│   ├── spam-it/index.html            # Generated — do not edit by hand
-│   ├── cp-helper/index.html
-│   ├── picoctf-2025-writeups/index.html
-│   └── leetcode-solutions/index.html
 ├── tools/
-│   ├── build-project-pages.js # Renders project pages + sitemap.xml
+│   ├── build-project-pages.js # Builds the site into public/
 │   └── verify-seo.js          # Headless-Chrome SEO audit
-├── index.html             # Homepage
-├── sitemap.xml            # Generated
+├── index.html             # Homepage (JSON-LD injected at build time)
 ├── robots.txt
-├── vercel.json            # cleanUrls, trailingSlash, canonical redirects
+├── vercel.json            # outputDirectory, cleanUrls, trailingSlash, redirects
+├── public/                # GENERATED — the deployable site (gitignored)
+│   ├── index.html
+│   ├── sitemap.xml
+│   ├── robots.txt
+│   ├── assets/
+│   └── projects/<slug>/index.html
 └── .gitignore
 ```
 
@@ -201,17 +213,25 @@ else inherits.
 2. Write the `problem` / `solution` prose. This is the body copy search
    engines index, so describe the problem, the approach and the outcome —
    not just the tech stack.
-3. Run `npm run build`. This creates `projects/<slug>/index.html`, adds the
-   route to `sitemap.xml`, and regenerates the translation bundle.
+3. Run `npm run build`. This creates `public/projects/<slug>/index.html`,
+   adds the route to `public/sitemap.xml`, adds it to the homepage JSON-LD
+   `ItemList`, and regenerates the translation bundle.
 4. Add a matching card to the project grid in `index.html` (title link +
    "Read case study" CTA pointing at `/projects/<slug>/`).
-5. Run `npm run verify:seo` to confirm the new route passes every check.
+5. Run `npm run check` to confirm the new route passes every check.
 
 ## 🚀 Deployment Instructions
 This project is optimized for **Vercel**:
 1. Connect your GitHub account to Vercel.
 2. Select the `dipraj-portfolio` repository.
-3. Click **Deploy**. Vercel will automatically detect the static files.
+3. Click **Deploy**. Vercel runs `npm run build`, which fills `public/` —
+   the directory declared as `outputDirectory` in `vercel.json`.
+
+**Domain setup:** `https://dipraj.bond` is the canonical host. The
+`www.dipraj.bond` → `dipraj.bond` redirect is defined in `vercel.json`. If the
+Vercel dashboard has its own domain redirect configured, that setting
+**overrides** `vercel.json` — make sure the dashboard redirect points the same
+way (www → apex), or remove it and let `vercel.json` handle it.
 
 ## 🤝 Contact
 - **Name:** Dipraj Mitra Chandon (দ্বীপরাজ মিত্র চন্দন)

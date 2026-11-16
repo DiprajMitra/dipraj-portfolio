@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "node tools/build-project-pages.js",
-    "serve": "python3 -m http.server 8099",
+    "serve": "python3 -m http.server 8099 --directory public",
     "verify:seo": "node tools/verify-seo.js",
     "check": "npm run build && npm run verify:seo"
   },

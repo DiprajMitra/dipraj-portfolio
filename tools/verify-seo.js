@@ -23,6 +23,10 @@ const SHOT_DIR = path.resolve(__dirname, '..', '.seo-shots');
 const EXECUTABLE = process.env.CHROME_PATH ||
     path.join(process.env.HOME || '/root', '.cache/ms-playwright/chromium-1255/chrome-linux64/chrome');
 
+/* The canonical origin every route advertises. The sitemap must list exactly
+   these URLs, so the expected <loc> values are derived from it. */
+const ORIGIN = 'https://dipraj.bond';
+
 const ROUTES = [
     {
         path: '/',
@@ -259,6 +263,55 @@ fs.mkdirSync(SHOT_DIR, { recursive: true });
         if (r.status() !== 200) failures++;
     }
     await context.close();
+
+    /* ---------- Crawler-facing files must exist and be well formed ---------- *
+     * Both were missing from the live deployment, so they are asserted here
+     * rather than assumed. */
+    {
+        const res = await fetch(BASE + '/robots.txt');
+        const body = res.ok ? await res.text() : '';
+        const problems = [];
+        if (!res.ok) problems.push(`HTTP ${res.status}`);
+        if (!/^User-agent:\s*\*/m.test(body)) problems.push('no "User-agent: *" directive');
+        if (!/^Allow:\s*\//m.test(body)) problems.push('no "Allow: /" directive');
+        if (!/^Sitemap:\s*https?:\/\/\S+/m.test(body)) problems.push('no absolute Sitemap: reference');
+        const sitemapRef = body.match(/^Sitemap:\s*(\S+)/m);
+        console.log(`FILE ${'/robots.txt'.padEnd(36)} ${res.status}`);
+        if (problems.length) {
+            failures += problems.length;
+            problems.forEach((p) => console.log(`       - ${p}`));
+        }
+
+        /* The sitemap reference must be the canonical origin AND the sitemap
+           itself must be served with every route listed. The reference is
+           absolute (it points at the live host), so it is checked against the
+           canonical origin while the document is fetched from this server. */
+        if (sitemapRef) {
+            const smProblems = [];
+            if (sitemapRef[1] !== `${ORIGIN}/sitemap.xml`) {
+                smProblems.push(`Sitemap: reference is "${sitemapRef[1]}", expected "${ORIGIN}/sitemap.xml"`);
+            }
+
+            const smRes = await fetch(BASE + '/sitemap.xml');
+            const smBody = smRes.ok ? await smRes.text() : '';
+            if (!smRes.ok) smProblems.push(`HTTP ${smRes.status}`);
+
+            const locs = [...smBody.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+            if (locs.length !== ROUTES.length) {
+                smProblems.push(`expected ${ROUTES.length} <loc> entries, found ${locs.length}`);
+            }
+            for (const r of ROUTES) {
+                const loc = `${ORIGIN}${r.path}`;
+                if (!locs.includes(loc)) smProblems.push(`missing <loc> ${loc}`);
+            }
+
+            console.log(`FILE ${'/sitemap.xml'.padEnd(36)} ${smRes.status} (${locs.length} urls)`);
+            if (smProblems.length) {
+                failures += smProblems.length;
+                smProblems.forEach((p) => console.log(`       - ${p}`));
+            }
+        }
+    }
 
     await browser.close();
     console.log(`\n${failures === 0 ? 'ALL CHECKS PASSED' : failures + ' PROBLEM(S) FOUND'}`);
