@@ -285,8 +285,8 @@ ${jsonLd(schema)}
                     <span aria-hidden="true">বাং</span>
                 </button>
                 <button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch to light mode">
-                    <svg class="icon icon--moon" aria-hidden="true"><use width="20" height="20" href="#icon-moon"/></svg>
-                    <svg class="icon icon--sun" aria-hidden="true"><use width="20" height="20" href="#icon-sun"/></svg>
+                    <svg class="icon icon--moon" aria-hidden="true"><use href="#icon-moon"/></svg>
+                    <svg class="icon icon--sun" aria-hidden="true"><use href="#icon-sun"/></svg>
                 </button>
                 <button type="button" id="menu-toggle" class="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
                     <span></span><span></span><span></span>
@@ -315,15 +315,15 @@ ${jsonLd(schema)}
                         <div class="pd-hero__actions">
                             <a href="${esc(p.repo)}" class="btn btn--primary" target="_blank" rel="noopener noreferrer">
                                 <span data-i18n="projects.view">View repository</span>
-                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                                <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg>
                             </a>${p.demo ? `
                             <a href="${esc(p.demo)}" class="btn btn--ghost" target="_blank" rel="noopener noreferrer">
                                 <span data-i18n="projects.demo">Live demo</span>
-                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                                <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg>
                             </a>` : ''}
                             <a href="/#projects" class="btn btn--ghost">
                                 <span data-i18n="projects.all">All projects</span>
-                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
+                                <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"/></svg>
                             </a>
                         </div>
                         <ul class="pd-tags">
@@ -378,7 +378,7 @@ ${p.tech.map((t) => `                    <li>${esc(t)}</li>`).join('\n')}
                 <div class="pd-hero__actions">
                     <a href="${esc(p.repo)}" class="btn btn--primary" target="_blank" rel="noopener noreferrer">
                         <span data-i18n="projects.view">View repository</span>
-                        <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                        <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg>
                     </a>
                 </div>
             </div>
@@ -404,7 +404,7 @@ ${p.tech.map((t) => `                    <li>${esc(t)}</li>`).join('\n')}
             </p>
             <a href="/#home" class="footer__top">
                 <span data-i18n="footer.backToTop">Back to top</span>
-                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-up"/></svg>
+                <svg class="icon" aria-hidden="true"><use href="#icon-arrow-up"/></svg>
             </a>
         </div>
     </footer>
@@ -636,8 +636,8 @@ ${jsonLd(schema)}
                     <span aria-hidden="true">বাং</span>
                 </button>
                 <button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch to light mode">
-                    <svg class="icon icon--moon" aria-hidden="true"><use width="20" height="20" href="#icon-moon"/></svg>
-                    <svg class="icon icon--sun" aria-hidden="true"><use width="20" height="20" href="#icon-sun"/></svg>
+                    <svg class="icon icon--moon" aria-hidden="true"><use href="#icon-moon"/></svg>
+                    <svg class="icon icon--sun" aria-hidden="true"><use href="#icon-sun"/></svg>
                 </button>
                 <button type="button" id="menu-toggle" class="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
                     <span></span><span></span><span></span>
@@ -697,7 +697,7 @@ ${renderBlocks(post.body)}
             </p>
             <a href="/#home" class="footer__top">
                 <span data-i18n="footer.backToTop">Back to top</span>
-                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-up"/></svg>
+                <svg class="icon" aria-hidden="true"><use href="#icon-arrow-up"/></svg>
             </a>
         </div>
     </footer>

@@ -256,6 +256,13 @@ svg {
     width: 1.15em;
     height: 1.15em;
     flex: none;
+    /* Explicit paint context. Without this the SVG user-agent default is
+       fill:black / stroke:none, so a symbol that forgets its own fill or
+       stroke attribute renders as a black blob or vanishes entirely.
+       currentColor is inherited by every symbol; each path still declares
+       its own fill/stroke, which wins over this inherited baseline. */
+    fill: currentColor;
+    stroke: currentColor;
 }
 
 /* Focus — always visible for keyboard users */
