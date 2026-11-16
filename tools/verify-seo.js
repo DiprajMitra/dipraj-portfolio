@@ -30,7 +30,7 @@ const ORIGIN = 'https://dipraj.bond';
 const ROUTES = [
     {
         path: '/',
-        schemaTypes: ['Person', 'WebSite', 'ItemList'],
+        schemaTypes: ['Person', 'WebSite', 'ItemList', 'Blog'],
         expectTitle: 'Dipraj Mitra — Software Engineer & Competitive Programmer',
     },
     {
@@ -52,6 +52,61 @@ const ROUTES = [
         path: '/projects/leetcode-solutions/',
         schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
         expectTitle: 'LeetCode Solutions — Optimised Algorithms in C++ and Python',
+    },
+    {
+        path: '/projects/who-stays-on/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Who Stays On — MILP Load-Shedding Optimizer in Python',
+    },
+    {
+        path: '/projects/gridman-gridwise/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'GridMan GridWise — Energy Optimization API with LP Solver',
+    },
+    {
+        path: '/projects/stockroom/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'StockRoom — 3NF Inventory Control System with RBAC',
+    },
+    {
+        path: '/projects/finditbd/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'FindItBD — AI Product Price Comparison for BD Stores',
+    },
+    {
+        path: '/projects/predict-the-pitch/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Predict The Pitch — XGBoost Football Outcome Prediction',
+    },
+    {
+        path: '/projects/bit-bin/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Bit Bin — Client-Side Encrypted Pastebin with Zero Knowledge',
+    },
+    {
+        path: '/blog/why-i-stopped-trusting-the-llm-with-the-maths/',
+        schemaTypes: ['BlogPosting', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Why I Stopped Trusting The LLM With All Of The Maths',
+    },
+    {
+        path: '/blog/the-load-shedding-problem-that-taught-me-to-think-in-constraints/',
+        schemaTypes: ['BlogPosting', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Thinking In Constraints: A Load Shedding Optimizer',
+    },
+    {
+        path: '/blog/writing-leetcode-solutions-i-actually-remember/',
+        schemaTypes: ['BlogPosting', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Writing LeetCode Solutions That You Actually Remember',
+    },
+    {
+        path: '/blog/building-a-pastebin-that-the-server-cannot-read/',
+        schemaTypes: ['BlogPosting', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Building A Pastebin That The Server Can Never Read',
+    },
+    {
+        path: '/blog/five-things-i-learned-from-six-hour-hackathons/',
+        schemaTypes: ['BlogPosting', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Five Things I Learned From Six Hour Long Hackathons',
     },
 ];
 
@@ -250,16 +305,19 @@ fs.mkdirSync(SHOT_DIR, { recursive: true });
         await context.close();
     }
 
-    /* ---------- Follow every project link and confirm it resolves ---------- */
+    /* ---------- Follow every project and blog link and confirm it resolves ---------- */
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(BASE + '/', { waitUntil: 'networkidle' });
-    const hrefs = await page.$$eval('a[href^="/projects/"]', (as) => [...new Set(as.map((a) => a.getAttribute('href')))]);
+    const hrefs = await page.$$eval(
+        'a[href^="/projects/"], a[href^="/blog/"]',
+        (as) => [...new Set(as.map((a) => a.getAttribute('href')))]
+    );
     for (const href of hrefs) {
         const r = await page.goto(BASE + href, { waitUntil: 'domcontentloaded' });
         const t = await page.title();
         const h1 = await page.$eval('h1', (e) => e.textContent.trim());
-        console.log(`LINK ${href.padEnd(36)} ${r.status()} h1="${h1}" title="${t}"`);
+        console.log(`LINK ${href.padEnd(56)} ${r.status()} h1="${h1}" title="${t}"`);
         if (r.status() !== 200) failures++;
     }
     await context.close();
