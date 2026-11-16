@@ -27,6 +27,7 @@ const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'public');
 const REGISTRY = path.join(ROOT, 'assets', 'js', 'projects.js');
+const POST_REGISTRY = path.join(ROOT, 'assets', 'js', 'posts.js');
 
 /** Marker in index.html where the build injects the homepage JSON-LD. */
 const HOME_SCHEMA_MARKER = '<!--BUILD:HOME_SCHEMA-->';
@@ -37,6 +38,9 @@ const sandbox = { window: {} };
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(REGISTRY, 'utf8'), sandbox, { filename: REGISTRY });
 const { site, all: PROJECTS } = sandbox.window.PortfolioProjects;
+
+vm.runInContext(fs.readFileSync(POST_REGISTRY, 'utf8'), sandbox, { filename: POST_REGISTRY });
+const POSTS = sandbox.window.POSTS;
 
 /* ---------- Helpers ---------- */
 
@@ -395,6 +399,269 @@ ${p.tech.map((t) => `                    <li>${esc(t)}</li>`).join('\n')}
 `;
 }
 
+/* ---------- Blog page template ---------- */
+
+/** Render a post's body blocks as semantic HTML. */
+function renderBlocks(blocks) {
+    return blocks.map((b) => {
+        switch (b.type) {
+            case 'h2':
+                return `                <h2>${esc(b.text)}</h2>`;
+            case 'ul':
+                return `                <ul>\n${b.items.map((i) => `                    <li>${esc(i)}</li>`).join('\n')}\n                </ul>`;
+            case 'quote':
+                return `                <blockquote>\n                    <p>${esc(b.text)}</p>\n                </blockquote>`;
+            case 'code':
+                return `                <pre class="blog-code"><code class="language-${esc(b.lang || 'text')}">${esc(b.text)}</code></pre>`;
+            default:
+                return `                <p>${esc(b.text)}</p>`;
+        }
+    }).join('\n');
+}
+
+function renderPost(post, index) {
+    const prev = POSTS[(index - 1 + POSTS.length) % POSTS.length];
+    const next = POSTS[(index + 1) % POSTS.length];
+    const url = abs(`/blog/${post.slug}/`);
+    const published = post.date;
+    const updated = post.updated || post.date;
+
+    const schema = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'BlogPosting',
+                '@id': url + '#post',
+                url,
+                headline: post.title,
+                description: post.metaDescription,
+                author: { '@id': site.origin + '/#person' },
+                creator: { '@id': site.origin + '/#person' },
+                publisher: { '@id': site.origin + '/#person' },
+                datePublished: published,
+                dateModified: updated,
+                inLanguage: 'en',
+                keywords: post.category,
+                articleSection: post.category,
+                wordCount: post.body.reduce((n, b) => {
+                    const t = b.type === 'ul' ? b.items.join(' ') : b.text || '';
+                    return n + t.split(/\s+/).filter(Boolean).length;
+                }, 0),
+                image: OG_IMAGE,
+                mainEntityOfPage: { '@id': url + '#webpage' },
+            },
+            {
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    { '@type': 'ListItem', position: 1, name: 'Home', item: abs('/') },
+                    { '@type': 'ListItem', position: 2, name: 'Blog', item: abs('/#blog') },
+                    { '@type': 'ListItem', position: 3, name: post.title, item: url },
+                ],
+            },
+            {
+                '@type': 'WebPage',
+                '@id': url + '#webpage',
+                url,
+                name: post.metaTitle,
+                description: post.metaDescription,
+                isPartOf: { '@id': site.origin + '/#website' },
+                about: { '@id': site.origin + '/#person' },
+                inLanguage: 'en',
+                datePublished: published,
+                dateModified: updated,
+                primaryImageOfPage: OG_IMAGE,
+            },
+        ],
+    };
+
+    return `<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${esc(post.metaTitle)}</title>
+    <meta name="description" content="${esc(post.metaDescription)}">
+    <meta name="author" content="${esc(site.authorFull)}">
+    <meta name="theme-color" content="#0b1120">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+    <link rel="canonical" href="${url}">
+    <link rel="alternate" hreflang="en" href="${url}">
+    <link rel="alternate" hreflang="x-default" href="${url}">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="${esc(site.name)}">
+    <meta property="og:locale" content="${site.locale}">
+    <meta property="og:title" content="${esc(post.metaTitle)}">
+    <meta property="og:description" content="${esc(post.metaDescription)}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:image" content="${OG_IMAGE}">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="640">
+    <meta property="og:image:alt" content="${esc(post.title)}">
+    <meta property="article:published_time" content="${published}">
+    <meta property="article:modified_time" content="${updated}">
+    <meta property="article:author" content="${esc(site.authorFull)}">
+    <meta property="article:section" content="${esc(post.category)}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${esc(post.metaTitle)}">
+    <meta name="twitter:description" content="${esc(post.metaDescription)}">
+    <meta name="twitter:image" content="${OG_IMAGE}">
+    <meta name="twitter:image:alt" content="${esc(post.title)}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='monospace' font-weight='bold' fill='%236366f1'>D</text></svg>">
+
+    <script type="application/ld+json">
+${jsonLd(schema)}
+    </script>
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('portfolio.theme');
+                var mode = saved === 'light' || saved === 'dark'
+                    ? saved
+                    : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', mode);
+                document.documentElement.classList.add(mode === 'light' ? 'light-mode' : 'dark-mode');
+
+                var lang = localStorage.getItem('portfolio.lang');
+                if (lang !== 'bn' && lang !== 'en') {
+                    lang = (navigator.languages || [navigator.language || 'en'])
+                        .some(function (l) { return String(l).toLowerCase().slice(0, 2) === 'bn'; }) ? 'bn' : 'en';
+                }
+                document.documentElement.setAttribute('lang', lang);
+                document.documentElement.setAttribute('data-lang', lang);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-lang', 'en');
+            }
+        })();
+    </script>
+</head>
+<body class="dark-mode" data-page-meta="static">
+
+    <svg class="svg-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.24 2.75.12 3.04.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12.5.5Z"/></symbol>
+        <symbol id="icon-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05a3.75 3.75 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></symbol>
+        <symbol id="icon-mail" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16a1 1 0 1 1 1 1v12a1 1 0 1 1-1 1H4a1 1 0 1 1-1-1V6a1 1 0 1 1 1-1Zm0 1.5v.6l8 5 8-5v-.6M4 18.5V7.9l8 5 8-5v10.6"/></symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+        <symbol id="icon-arrow-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+        <symbol id="icon-chevron-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+        <symbol id="icon-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6m0-6L10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+        <symbol id="icon-moon" viewBox="0 0 24 24"><path fill="currentColor" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></symbol>
+        <symbol id="icon-sun" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-1-13h2v3h-2V2Zm0 17h2v3h-2v-3ZM2 11h3v2H2v-2Zm17 0h3v2h-3v-2ZM4.22 5.64l1.42-1.42 2.12 2.12L6.34 7.76 4.22 5.64Zm12.02 12.02 1.42-1.42 2.12 2.12-1.42 1.42-2.12-2.12Zm2.12-13.44 1.42 1.42-2.12 2.12-1.42-1.42L18.16 4.2ZM6.34 16.24l1.42 1.42-2.12 2.12-1.42-1.42 2.12-2.12Z"/></symbol>
+        <symbol id="icon-code" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10-3 12"/></symbol>
+        <symbol id="icon-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 13.9 8l5.6 1.9-5.6 1.9L12 17.4l-1.9-5.6L4.5 9.9 10.1 8 12 2.5ZM19 15l.95 2.55L22.5 18.5l-2.55.95L19 22l-.95-2.55L15.5 18.5l2.55-.95L19 15Z"/></symbol>
+    </svg>
+
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to main content</a>
+
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <header class="header" id="site-header">
+        <nav class="navbar container" aria-label="Primary">
+            <a href="/" class="logo">
+                <span class="logo__mark" aria-hidden="true">&gt;_</span>
+                <span class="logo__text">dipraj<span class="logo__accent">.bond</span></span>
+            </a>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="/#home" class="nav-link" data-i18n="nav.home">Home</a></li>
+                <li><a href="/#about" class="nav-link" data-i18n="nav.about">About</a></li>
+                <li><a href="/#projects" class="nav-link" data-i18n="nav.projects">Projects</a></li>
+                <li><a href="/#blog" class="nav-link" data-i18n="nav.blog">Blog</a></li>
+                <li><a href="/#experience" class="nav-link" data-i18n="nav.experience">Experience</a></li>
+                <li><a href="/#contact" class="nav-link" data-i18n="nav.contact">Contact</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button type="button" id="lang-toggle" class="lang-toggle" data-lang-switch aria-label="Switch language to Bangla">
+                    <span aria-hidden="true">বাং</span>
+                </button>
+                <button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch to light mode">
+                    <svg class="icon icon--moon" aria-hidden="true"><use width="20" height="20" href="#icon-moon"/></svg>
+                    <svg class="icon icon--sun" aria-hidden="true"><use width="20" height="20" href="#icon-sun"/></svg>
+                </button>
+                <button type="button" id="menu-toggle" class="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main">
+
+        <article class="blog-post">
+            <header class="blog-hero">
+                <div class="container">
+                    <nav class="breadcrumb" aria-label="Breadcrumb">
+                        <a href="/" data-i18n="nav.home">Home</a>
+                        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+                        <a href="/#blog" data-i18n="nav.blog">Blog</a>
+                        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+                        <span aria-current="page">${esc(post.title)}</span>
+                    </nav>
+
+                    <div class="blog-hero__meta">
+                        <span class="blog-hero__cat">${esc(post.category)}</span>
+                        <time class="blog-hero__date" datetime="${published}">${esc(published)}</time>
+                        <span class="blog-hero__read">${post.readMinutes} min read</span>
+                    </div>
+
+                    <h1 class="blog-hero__title">${esc(post.title)}</h1>
+                    <p class="blog-hero__excerpt">${esc(post.excerpt)}</p>
+                </div>
+            </header>
+
+            <div class="container">
+                <div class="blog-body">
+${renderBlocks(post.body)}
+                </div>
+            </div>
+
+            <nav class="container pd-nav" aria-label="More posts">
+                <a class="pd-nav__item" href="${abs(`/blog/${prev.slug}/`)}">
+                    <span class="pd-nav__label">&larr; Previous</span>
+                    <span class="pd-nav__title">${esc(prev.title)}</span>
+                </a>
+                <a class="pd-nav__item pd-nav__item--next" href="${abs(`/blog/${next.slug}/`)}">
+                    <span class="pd-nav__label">Next &rarr;</span>
+                    <span class="pd-nav__title">${esc(next.title)}</span>
+                </a>
+            </nav>
+        </article>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <p class="footer__copy">
+                &copy; <span id="year">2026</span> ${esc(site.authorFull)}. <span data-i18n="footer.built">Built with love and too much coffee.</span>
+            </p>
+            <a href="/#home" class="footer__top">
+                <span data-i18n="footer.backToTop">Back to top</span>
+                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-up"/></svg>
+            </a>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="/assets/js/i18n.js"></script>
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>
+`;
+}
+
 /* ---------- Project translation bundle ----------
  * Emitted as a JSON island in each page so the i18n layer can swap the
  * Bangla copy without a second build step or a network request. */
@@ -437,6 +704,16 @@ PROJECTS.forEach((p, i) => {
     written += 1;
 });
 
+POSTS.forEach((post, i) => {
+    assertSeo(post);
+    const dir = path.join(OUT, 'blog', post.slug);
+    fs.mkdirSync(dir, { recursive: true });
+    const out = path.join(dir, 'index.html');
+    fs.writeFileSync(out, renderPost(post, i), 'utf8');
+    console.log('wrote', path.relative(ROOT, out));
+    written += 1;
+});
+
 /* ---------- Homepage JSON-LD (Person + WebSite + ItemList) ---------- */
 
 const homeSchema = {
@@ -464,6 +741,35 @@ const homeSchema = {
                 position: i + 1,
                 url: abs(`/projects/${p.slug}/`),
                 name: p.title,
+            })),
+        },
+        {
+            '@type': 'Blog',
+            '@id': site.origin + '/#blog',
+            name: 'Dipraj Mitra — Blog',
+            url: abs('/#blog'),
+            inLanguage: 'en',
+            author: { '@id': site.origin + '/#person' },
+            publisher: { '@id': site.origin + '/#person' },
+            blogPost: POSTS.map((post) => ({
+                '@type': 'BlogPosting',
+                '@id': abs(`/blog/${post.slug}/`) + '#post',
+                url: abs(`/blog/${post.slug}/`),
+                headline: post.title,
+                datePublished: post.date,
+                dateModified: post.updated || post.date,
+            })),
+        },
+        {
+            '@type': 'ItemList',
+            '@id': site.origin + '/#blog-list',
+            name: 'Blog posts by Dipraj Mitra',
+            numberOfItems: POSTS.length,
+            itemListElement: POSTS.map((post, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                url: abs(`/blog/${post.slug}/`),
+                name: post.title,
             })),
         },
     ],
@@ -506,6 +812,12 @@ ${PROJECTS.map((p) => `    <url>
         <lastmod>${p.updated}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
+    </url>`).join('\n')}
+${POSTS.map((post) => `    <url>
+        <loc>${site.origin}/blog/${post.slug}/</loc>
+        <lastmod>${post.updated || post.date}</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.6</priority>
     </url>`).join('\n')}
 </urlset>
 `;
