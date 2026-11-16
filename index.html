@@ -11,9 +11,16 @@
 
     <link rel="canonical" href="https://dipraj.bond/">
 
+    <!-- The bilingual site switches language client-side on one URL, so both
+         hreflang entries point at the canonical URL, in their own locale. -->
+    <link rel="alternate" hreflang="en" href="https://dipraj.bond/">
+    <link rel="alternate" hreflang="bn" href="https://dipraj.bond/">
+    <link rel="alternate" hreflang="x-default" href="https://dipraj.bond/">
+
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Dipraj Mitra Portfolio">
     <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="bn_BD">
     <meta property="og:title" content="Dipraj Mitra — Software Engineer &amp; Competitive Programmer">
     <meta property="og:description" content="Software engineer and competitive programmer building full-stack apps, security tooling and AI experiments. Browse individually indexable project write-ups.">
     <meta property="og:url" content="https://dipraj.bond/">
@@ -178,6 +185,9 @@
 
                     <p class="hero__greeting reveal" data-reveal data-i18n="hero.greeting">Hello, I'm</p>
                     <h1 class="hero__name reveal" data-reveal data-i18n="hero.name">Dipraj Mitra Chandon</h1>
+                    <!-- Bengali name: kept in the served HTML so name searches in
+                         Bangla match this page. Visually hidden to preserve the design. -->
+                    <p class="visually-hidden" lang="bn" dir="ltr">দ্বীপরাজ মিত্র চন্দন</p>
                     <p class="hero__role-label">Software Engineer &amp; Competitive Programmer</p>
                     <h2 class="hero__role">
                         <span class="hero__role-prefix" aria-hidden="true">&gt;</span>
@@ -518,7 +528,7 @@
                         </button>
 
                         <ul class="socials">
-                            <li><a href="https://github.com/Dipraj2" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="icon"><use width="24" height="24" href="#icon-github"/></svg></a></li>
+                            <li><a href="https://github.com/DiprajMitra" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="icon"><use width="24" height="24" href="#icon-github"/></svg></a></li>
                             <li><a href="https://www.linkedin.com/in/dipraj-mitra/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg class="icon"><use width="24" height="24" href="#icon-linkedin"/></svg></a></li>
                             <li><a href="https://x.com/DiprajMitra_007" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><svg class="icon"><use width="24" height="24" href="#icon-twitter"/></svg></a></li>
                             <li><a href="https://www.instagram.com/diprajmitra123/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg class="icon"><use width="24" height="24" href="#icon-instagram"/></svg></a></li>

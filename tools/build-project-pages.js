@@ -71,7 +71,10 @@ function personSchema() {
         '@type': 'Person',
         '@id': site.origin + '/#person',
         name: site.author,
-        alternateName: site.authorFull,
+        // Every spelling a person might search for — the schema.org
+        // `alternateName` is what lets a search for the Bengali name resolve
+        // to this entity.
+        alternateName: [site.authorFull, 'দ্বীপরাজ মিত্র চন্দন'],
         url: site.origin + '/',
         jobTitle: 'Software Engineer & Computer Science Student',
         description: 'Software Engineer, Full-Stack Developer, Competitive Programmer and Cybersecurity (CTF) competitor at the University of Asia Pacific.',
@@ -94,7 +97,7 @@ function personSchema() {
             'Automation',
         ],
         sameAs: [
-            'https://github.com/Dipraj2',
+            'https://github.com/DiprajMitra',
             'https://www.linkedin.com/in/dipraj-mitra/',
             'https://x.com/DiprajMitra_007',
             'https://www.instagram.com/diprajmitra123/',

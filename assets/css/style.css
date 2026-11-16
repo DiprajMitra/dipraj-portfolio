@@ -372,6 +372,22 @@ html[data-lang='bn'] .section-head__eyebrow {
     top: 1rem;
 }
 
+/* Content that must reach crawlers but not the layout — e.g. the Bengali
+   name under the hero h1, which lets Bangla name searches match this page
+   without changing the visual design. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Scroll reveal */
 [data-reveal] {
     opacity: 0;

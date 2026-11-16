@@ -189,7 +189,7 @@ else inherits.
 ## ⚙️ Installation & Local Setup
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Dipraj2/dipraj-portfolio.git
+   git clone https://github.com/DiprajMitra/dipraj-portfolio.git
    ```
 2. **Navigate to the folder:**
    ```bash
