@@ -49,6 +49,15 @@
     <!-- Icons: inline SVG sprite (no render-blocking CDN) -->
     <link rel="stylesheet" href="/assets/css/style.css">
 
+    <!--
+        The hero portrait is the LCP element — it is the largest thing on
+        screen and the last thing to paint. Preloading it starts the fetch
+        in the preload scanner, before the parser reaches the <img> 8KB
+        further down. The type/attributes must match the <picture> below
+        exactly, or the browser downloads the image twice.
+    -->
+    <link rel="preload" as="image" href="/assets/images/dj.webp" type="image/webp" fetchpriority="high">
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='monospace' font-weight='bold' fill='%236366f1'>D</text></svg>">
 
     <!--
@@ -259,7 +268,10 @@
 
                 <div class="hero__visual reveal" data-reveal>
                     <div class="hero__image-wrap">
-                        <img src="/assets/images/dj.png" alt="Portrait of Dipraj Mitra Chandon" class="hero__img" width="420" height="420" fetchpriority="high" data-i18n-attr="alt:hero.portrait">
+                        <picture>
+                            <source srcset="/assets/images/dj.webp" type="image/webp">
+                            <img src="/assets/images/dj.png" alt="Portrait of Dipraj Mitra Chandon" class="hero__img" width="420" height="420" fetchpriority="high" decoding="async" data-i18n-attr="alt:hero.portrait">
+                        </picture>
                     </div>
                     <div class="hero__badge-float hero__badge-float--1" aria-hidden="true">
                         <svg class="icon"><use href="#icon-code"/></svg><span>Java · C++</span>

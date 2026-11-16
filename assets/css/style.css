@@ -1092,6 +1092,14 @@ html[data-lang='bn'] .stat dt {
     animation: blob-shift 14s ease-in-out infinite;
 }
 
+/* The <picture> wrapper must not collapse the image — it is an inline
+   element by default, which would take the img out of the flex layout. */
+.hero__image-wrap picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .hero__img {
     width: 100%;
     height: 100%;
