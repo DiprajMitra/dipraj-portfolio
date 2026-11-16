@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Block nothing — every public route (homepage + /projects/<slug>/) is
+# intentionally crawlable and individually indexable.
+
+Sitemap: https://dipraj.bond/sitemap.xml
