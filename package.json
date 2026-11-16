@@ -1,0 +1,27 @@
+{
+  "name": "dipraj-portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio of Dipraj Mitra — Software Engineer & Competitive Programmer",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build-project-pages.js",
+    "serve": "python3 -m http.server 8099",
+    "verify:seo": "node tools/verify-seo.js",
+    "check": "npm run build && npm run verify:seo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiprajMitra/dipraj-portfolio.git"
+  },
+  "keywords": [
+    "portfolio",
+    "seo",
+    "static-site"
+  ],
+  "author": "Dipraj Mitra Chandon",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "playwright-core": "^1.65.1"
+  }
+}
