@@ -105,6 +105,11 @@ function personSchema() {
             'https://www.linkedin.com/in/dipraj-mitra/',
             'https://x.com/DiprajMitra_007',
             'https://www.instagram.com/diprajmitra123/',
+            // Competitive programming identity. This is the handle that ties
+            // name searches to the algorithmic work, so it belongs in the
+            // graph alongside the social profiles.
+            'https://codeforces.com/profile/dipraj_007',
+            'https://vjudge.net/user/dipraj007',
         ],
     };
 }
