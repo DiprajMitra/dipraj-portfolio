@@ -103,6 +103,10 @@ can emit real semantic HTML without parsing markdown:
     { type: 'ul', items: ['…', '…'] },
     { type: 'quote', text: '…' },
     { type: 'code', lang: 'python', text: '…' },
+    { type: 'links', items: [        // related repos, demos, case studies
+      { text: 'Repo on GitHub', href: 'https://github.com/…' },
+      { text: 'Case study', href: '/projects/<slug>/' },
+    ] },
   ],
 }
 ```
@@ -160,6 +164,27 @@ accessible empty state.
 ### 📝 Blog
 Five write-ups derived from the projects, each on its own crawlable route with
 `BlogPosting` JSON-LD, breadcrumbs, reading time and prev/next navigation.
+Each post ends with links to the repo and demo it is about.
+
+### 📈 Vercel Web Analytics
+Page views plus custom events, with no runtime dependency:
+
+| Event | Fires when |
+|---|---|
+| `resume_download` | the hero résumé button is clicked |
+| `project_click` | a project card or its CTA is clicked |
+| `blog_post_open` | a blog card is clicked |
+| `contact_form_submit` | the contact form submits successfully |
+| `language_toggle` | the locale is switched between EN and BN |
+| `external_click` | a link leaves the site (the host is recorded) |
+
+The tracker is the script tag Vercel serves at `/_vercel/insights/script.js`.
+`assets/js/analytics.js` adds the custom events on top of it. Every call is
+guarded, so the site behaves exactly as before if Web Analytics is not enabled
+on the Vercel project.
+
+**To enable:** Vercel Dashboard → the project → **Analytics** → **Enable**.
+The `/_vercel/insights/*` routes appear on the next deployment.
 
 ### 📊 Scroll Experience
 Scroll-progress bar, active-section scroll spy, staggered scroll reveals and
@@ -192,6 +217,7 @@ dipraj-portfolio/
 │       ├── i18n.js        # EN/BN translation layer
 │       ├── projects.js    # Project registry (single source of truth)
 │       ├── posts.js       # Blog registry (single source of truth)
+│       ├── analytics.js   # Vercel Analytics custom events
 │       └── script.js      # Behaviour modules
 ├── tools/
 │   ├── build-project-pages.js # Builds the site into public/
