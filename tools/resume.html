@@ -162,6 +162,19 @@
         text-align: center;
     }
 </style>
+
+<!--
+  Vercel Web Analytics.
+  The queue stub must exist before the tracker script loads, otherwise any
+  event fired in between is dropped. The tracker itself is served by
+  Vercel at /_vercel/insights/script.js once Web Analytics is enabled on
+  the project; if it is not enabled the request 404s harmlessly and the
+  site behaves exactly as before.
+-->
+<script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
