@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dipraj Mitra — Résumé</title>
+<style>
+    @page { size: A4; margin: 14mm 14mm 12mm 14mm; }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "DejaVu Sans", "Liberation Sans", Helvetica, Arial, sans-serif;
+        font-size: 9.4pt;
+        line-height: 1.42;
+        color: #16181d;
+    }
+
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* ---------- Header ---------- */
+    header {
+        border-bottom: 1.6pt solid #4f46e5;
+        padding-bottom: 7pt;
+        margin-bottom: 11pt;
+    }
+
+    h1 {
+        font-size: 19pt;
+        line-height: 1.1;
+        margin: 0 0 2pt 0;
+        letter-spacing: -0.3pt;
+        color: #11131a;
+    }
+
+    .tagline {
+        font-size: 10pt;
+        color: #4f46e5;
+        font-weight: 700;
+        margin: 0 0 5pt 0;
+    }
+
+    .contact {
+        font-size: 8.6pt;
+        color: #3d4252;
+        line-height: 1.5;
+    }
+
+    .contact a { color: #3d4252; text-decoration: none; }
+    .sep { color: #a8adbd; margin: 0 5pt; }
+
+    /* ---------- Section headings ---------- */
+    h2 {
+        font-size: 9.6pt;
+        text-transform: uppercase;
+        letter-spacing: 1.1pt;
+        color: #4f46e5;
+        margin: 13pt 0 5pt 0;
+        padding-bottom: 2.5pt;
+        border-bottom: 0.6pt solid #d8dbe6;
+    }
+
+    /* ---------- Summary ---------- */
+    p.summary {
+        margin: 0;
+        text-align: justify;
+    }
+
+    /* ---------- Education ---------- */
+    .entry { margin-bottom: 8pt; }
+
+    .entry:last-child { margin-bottom: 0; }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 8pt;
+    }
+
+    .title {
+        font-weight: 700;
+        font-size: 9.8pt;
+    }
+
+    .meta {
+        font-size: 8.6pt;
+        color: #5c6172;
+        white-space: nowrap;
+        font-style: italic;
+    }
+
+    .sub {
+        color: #333747;
+        margin-top: 1pt;
+    }
+
+    .detail {
+        color: #4a4f60;
+        margin-top: 1.5pt;
+        font-size: 9pt;
+    }
+
+    /* ---------- Skill groups ---------- */
+    .skills { margin-top: 2pt; }
+
+    .skill-row {
+        display: flex;
+        gap: 7pt;
+        margin-bottom: 3.5pt;
+        font-size: 9pt;
+    }
+
+    .skill-label {
+        font-weight: 700;
+        min-width: 108pt;
+        flex-shrink: 0;
+        color: #262a38;
+    }
+
+    .skill-list { color: #3d4252; }
+
+    /* ---------- Projects ---------- */
+    .proj { margin-bottom: 7.5pt; page-break-inside: avoid; }
+
+    .proj-name { font-weight: 700; font-size: 9.7pt; }
+
+    .proj-tech {
+        color: #5c6172;
+        font-size: 8.6pt;
+        font-style: italic;
+        margin-top: 0.5pt;
+    }
+
+    .proj-desc {
+        margin-top: 2pt;
+        color: #3d4252;
+        font-size: 9pt;
+        text-align: justify;
+    }
+
+    /* ---------- Competitions ---------- */
+    ul.comp {
+        margin: 0;
+        padding-left: 14pt;
+    }
+
+    ul.comp li { margin-bottom: 3pt; }
+
+    ul.comp li:last-child { margin-bottom: 0; }
+
+    .award { font-weight: 700; }
+
+    /* ---------- Footer note ---------- */
+    .foot {
+        margin-top: 12pt;
+        padding-top: 5pt;
+        border-top: 0.6pt solid #d8dbe6;
+        font-size: 8pt;
+        color: #6b7080;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Dipraj Mitra</h1>
+    <p class="tagline">Software Engineer &amp; Competitive Programmer</p>
+    <div class="contact">
+        Dhaka, Bangladesh
+        <span class="sep">&bull;</span>
+        <a href="https://dipraj.bond">dipraj.bond</a>
+        <span class="sep">&bull;</span>
+        <a href="https://dipraj.vercel.app">dipraj.vercel.app</a>
+        <span class="sep">&bull;</span>
+        <a href="https://github.com/DiprajMitra">github.com/DiprajMitra</a>
+        <span class="sep">&bull;</span>
+        <a href="https://www.linkedin.com/in/dipraj-mitra/">linkedin.com/in/dipraj-mitra</a>
+        <span class="sep">&bull;</span>
+        Codeforces <strong>dipraj_007</strong>
+        <span class="sep">&bull;</span>
+        Virtual Judge <strong>dipraj007</strong>
+    </div>
+</header>
+
+<h2>Summary</h2>
+<p class="summary">
+    Computer Science and Engineering student with a strong background in full-stack development,
+    linear programming optimization, and machine learning. Passionate about competitive programming,
+    hackathons, and cybersecurity CTFs, with a track record of building and deploying practical,
+    end-to-end applications under tight deadlines.
+</p>
+
+<h2>Education</h2>
+<div class="entry">
+    <div class="row">
+        <span class="title">B.Sc. in Computer Science and Engineering</span>
+        <span class="meta">Currently in 2nd Year, 2nd Semester</span>
+    </div>
+    <div class="sub">University of Asia Pacific &mdash; Dhaka, Bangladesh</div>
+    <div class="detail">CGPA 3.65 / 4.00 &nbsp;&bull;&nbsp; Additional coursework: Harvard University CS50x (edX)</div>
+</div>
+
+<h2>Technical Skills</h2>
+<div class="skills">
+    <div class="skill-row">
+        <span class="skill-label">Languages</span>
+        <span class="skill-list">C++, Python, JavaScript / TypeScript, SQL</span>
+    </div>
+    <div class="skill-row">
+        <span class="skill-label">Frontend &amp; Backend</span>
+        <span class="skill-list">Next.js, React, Tailwind CSS, FastAPI</span>
+    </div>
+    <div class="skill-row">
+        <span class="skill-label">Databases &amp; Deployment</span>
+        <span class="skill-list">Supabase, FreeSQL, PostgreSQL, Vercel, Render, Hugging Face Spaces, Podman</span>
+    </div>
+    <div class="skill-row">
+        <span class="skill-label">ML &amp; Optimization</span>
+        <span class="skill-list">XGBoost, PuLP, Mixed-Integer Linear Programming (MILP), Gemini API</span>
+    </div>
+    <div class="skill-row">
+        <span class="skill-label">Security &amp; Systems</span>
+        <span class="skill-list">Linux (Fedora Workstation), Reverse Engineering (IDA Pro), Binary Analysis, Web Exploitation, CircuitMaker</span>
+    </div>
+</div>
+
+<h2>Selected Projects</h2>
+
+<div class="proj">
+    <div class="row">
+        <span class="proj-name">Who Stays On &mdash; Load-Shedding Optimization Solver</span>
+        <span class="meta">Oct 2026</span>
+    </div>
+    <div class="proj-tech">Python, FastAPI, PuLP / HiGHS (MILP), JavaScript</div>
+    <div class="proj-desc">
+        Built a Mixed-Integer Linear Programming solver endpoint that optimizes generator
+        load-shedding schedules for commercial complexes. Secured 5th place in a competitive
+        software hackathon by delivering real-time allocation decisions under strict power
+        constraints.
+    </div>
+</div>
+
+<div class="proj">
+    <div class="row">
+        <span class="proj-name">GridMan (GridWise) &mdash; Energy Optimization API</span>
+        <span class="meta">Sept 2026</span>
+    </div>
+    <div class="proj-tech">Python, FastAPI, PuLP, Gemini API, React</div>
+    <div class="proj-desc">
+        Developed an energy optimization linear programming solver using FastAPI, PuLP, and the
+        Gemini API for the BUP CSE FEST 2026 Hackathon. Deployed the backend microservice on
+        Render and the interactive frontend on Vercel for seamless real-time testing.
+    </div>
+</div>
+
+<div class="proj">
+    <div class="row">
+        <span class="proj-name">StockRoom &mdash; 3NF Inventory Control System</span>
+        <span class="meta">Nov 2026</span>
+    </div>
+    <div class="proj-tech">JavaScript, Node.js / Express, FreeSQL, Oracle, Vercel</div>
+    <div class="proj-desc">
+        Engineered a Third Normal Form (3NF) relational database inventory management web
+        application backed by FreeSQL and deployed on Vercel. Implemented complete item CRUD
+        operations and relational integrity checks to prevent stock discrepancies.
+    </div>
+</div>
+
+<div class="proj">
+    <div class="row">
+        <span class="proj-name">Mobile Banking Fraud &amp; Circular Transaction Detector</span>
+        <span class="meta">Oct 2026</span>
+    </div>
+    <div class="proj-tech">C++</div>
+    <div class="proj-desc">
+        Designed a high-performance C++ application utilizing graph cycle detection algorithms to
+        identify fraudulent circular transaction rings in mobile banking networks.
+    </div>
+</div>
+
+<div class="proj">
+    <div class="row">
+        <span class="proj-name">Predict The Pitch &mdash; Football Match Outcome Predictor</span>
+        <span class="meta">Mar 2026 &ndash; May 2026</span>
+    </div>
+    <div class="proj-tech">XGBoost, Python, FastAPI, React, Supabase</div>
+    <div class="proj-desc">
+        Created a Champions League match prediction platform using XGBoost, Python, FastAPI,
+        React, and Supabase, hosted across Vercel and Hugging Face Spaces.
+    </div>
+</div>
+
+<div class="proj">
+    <div class="row">
+        <span class="proj-name">FindItBD &mdash; AI Product Price Comparison Platform</span>
+        <span class="meta">June 2026</span>
+    </div>
+    <div class="proj-tech">Next.js, TypeScript, Supabase, Tailwind CSS</div>
+    <div class="proj-desc">
+        Built a web platform that aggregates and compares product listings across multiple
+        Bangladeshi e-commerce stores to find the best deals.
+    </div>
+</div>
+
+<div class="proj">
+    <div class="row">
+        <span class="proj-name">University Transport System Prototype</span>
+        <span class="meta">May 2026</span>
+    </div>
+    <div class="proj-tech">Facial recognition, QR code scanning</div>
+    <div class="proj-desc">
+        Assembled a working bus boarding verification prototype combining dual facial recognition
+        and QR code scanning during a 6-hour university hackathon.
+    </div>
+</div>
+
+<h2>Competitions &amp; Achievements</h2>
+<ul class="comp">
+    <li><span class="award">5th Place</span> &mdash; Software Hackathon (Oct 2026), Who Stays On MILP optimization project.</li>
+    <li><span class="award">6th Place</span> &mdash; ICPC-JRC Intra-UAP Programming Contest 2026 (Junior Category) with team Curious_Trio; authored a 23-page Team Reference Document.</li>
+    <li><span class="award">Finalist / Participant</span> &mdash; BUP CSE FEST 2026 Hackathon (Mad Thinkers) and NULL ORIGIN CTF (strings_flag).</li>
+    <li><span class="award">Active Competitor</span> &mdash; Regular algorithmic problem solver on Codeforces, CSES, USACO, and LeetCode, alongside cybersecurity CTFs on picoCTF and CTFlearn.</li>
+</ul>
+
+<div class="foot">
+    Reference: <a href="https://dipraj.bond">dipraj.bond</a>
+</div>
+
+</body>
+</html>
