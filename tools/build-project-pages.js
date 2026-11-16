@@ -230,6 +230,19 @@ ${jsonLd(schema)}
             }
         })();
     </script>
+
+    <!--
+      Vercel Web Analytics.
+      The queue stub must exist before the tracker script loads, otherwise any
+      event fired in between is dropped. The tracker itself is served by
+      Vercel at /_vercel/insights/script.js once Web Analytics is enabled on
+      the project; if it is not enabled the request 404s harmlessly and the
+      site behaves exactly as before.
+    -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="dark-mode" data-page-meta="static">
 
@@ -303,7 +316,11 @@ ${jsonLd(schema)}
                             <a href="${esc(p.repo)}" class="btn btn--primary" target="_blank" rel="noopener noreferrer">
                                 <span data-i18n="projects.view">View repository</span>
                                 <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
-                            </a>
+                            </a>${p.demo ? `
+                            <a href="${esc(p.demo)}" class="btn btn--ghost" target="_blank" rel="noopener noreferrer">
+                                <span data-i18n="projects.demo">Live demo</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            </a>` : ''}
                             <a href="/#projects" class="btn btn--ghost">
                                 <span data-i18n="projects.all">All projects</span>
                                 <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
@@ -399,6 +416,7 @@ ${p.tech.map((t) => `                    <li>${esc(t)}</li>`).join('\n')}
         window.PORTFOLIO_TRANSLATIONS = ${jsonLd(bundle)};
     </script>
     <script src="/assets/js/script.js"></script>
+    <script src="/assets/js/analytics.js"></script>
 </body>
 </html>
 `;
@@ -418,6 +436,17 @@ function renderBlocks(blocks) {
                 return `                <blockquote>\n                    <p>${esc(b.text)}</p>\n                </blockquote>`;
             case 'code':
                 return `                <pre class="blog-code"><code class="language-${esc(b.lang || 'text')}">${esc(b.text)}</code></pre>`;
+            case 'links': {
+                /* A short list of the things the post is about. Outbound links
+                   give the reader somewhere to go next and give search
+                   engines the relationship between the post and the repo. */
+                const items = b.items.map((i) => {
+                    const href = esc(i.href || '#');
+                    const rel = /^https?:/i.test(i.href || '') ? ' target="_blank" rel="noopener noreferrer"' : '';
+                    return `                    <li><a href="${href}"${rel}>${esc(i.text)}</a></li>`;
+                }).join('\n');
+                return `                <ul class="blog-links">\n${items}\n                </ul>`;
+            }
             default:
                 return `                <p>${esc(b.text)}</p>`;
         }
@@ -449,7 +478,9 @@ function renderPost(post, index) {
                 keywords: post.category,
                 articleSection: post.category,
                 wordCount: post.body.reduce((n, b) => {
-                    const t = b.type === 'ul' ? b.items.join(' ') : b.text || '';
+                    let t = b.text || '';
+                    if (b.type === 'ul') t = b.items.join(' ');
+                    else if (b.type === 'links') t = b.items.map((i) => i.text).join(' ');
                     return n + t.split(/\s+/).filter(Boolean).length;
                 }, 0),
                 image: OG_IMAGE,
@@ -549,6 +580,19 @@ ${jsonLd(schema)}
             }
         })();
     </script>
+
+    <!--
+      Vercel Web Analytics.
+      The queue stub must exist before the tracker script loads, otherwise any
+      event fired in between is dropped. The tracker itself is served by
+      Vercel at /_vercel/insights/script.js once Web Analytics is enabled on
+      the project; if it is not enabled the request 404s harmlessly and the
+      site behaves exactly as before.
+    -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="dark-mode" data-page-meta="static">
 
@@ -662,6 +706,7 @@ ${renderBlocks(post.body)}
 
     <script src="/assets/js/i18n.js"></script>
     <script src="/assets/js/script.js"></script>
+    <script src="/assets/js/analytics.js"></script>
 </body>
 </html>
 `;
