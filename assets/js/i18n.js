@@ -35,6 +35,7 @@
             'nav.home': 'Home',
             'nav.about': 'About',
             'nav.projects': 'Projects',
+            'nav.blog': 'Blog',
             'nav.experience': 'Experience',
             'nav.contact': 'Contact',
             'nav.theme.dark': 'Switch to dark mode',
@@ -109,6 +110,22 @@
             'projects.p3.body': 'Full walkthroughs and solutions for the picoCTF 2025 cybersecurity challenges, written for other learners to follow.',
             'projects.p4.title': 'LeetCode Solutions',
             'projects.p4.body': 'A growing collection of optimized LeetCode solutions with complexity notes for each approach.',
+            'projects.p5.title': 'Who Stays On',
+            'projects.p5.body': 'A MILP solver that decides which shops keep the lights on during load shedding. Fifth place in a software hackathon.',
+            'projects.p6.title': 'GridMan (GridWise)',
+            'projects.p6.body': 'An energy dispatch engine where the LLM reads the request and a linear programming solver does the maths.',
+            'projects.p7.title': 'StockRoom',
+            'projects.p7.body': 'A 3NF inventory control system with role-based access enforced at both the API layer and the database.',
+            'projects.p8.title': 'FindItBD',
+            'projects.p8.body': 'One search that compares product listings across five Bangladeshi stores to find the best price.',
+            'projects.p9.title': 'Predict The Pitch',
+            'projects.p9.body': 'Expected goals and win probabilities for Champions League fixtures, powered by a two layer XGBoost model.',
+            'projects.p10.title': 'Bit Bin',
+            'projects.p10.body': 'A pastebin that encrypts in the browser, so the server stores ciphertext and never sees your text.',
+
+            /* ---- blog ---- */
+            'blog.title': 'Notes From The Build',
+            'blog.subtitle': 'What I learned, and what I would tell myself earlier',
 
             /* ---- experience ---- */
             'exp.title': 'Education & Experience',
@@ -172,6 +189,7 @@
             'nav.home': 'হোম',
             'nav.about': 'পরিচিতি',
             'nav.projects': 'প্রকল্প',
+            'nav.blog': 'ব্লগ',
             'nav.experience': 'অভিজ্ঞতা',
             'nav.contact': 'যোগাযোগ',
             'nav.theme.dark': 'ডার্ক মোডে যান',
@@ -246,6 +264,22 @@
             'projects.p3.body': 'picoCTF 2025 সাইবার সিকিউরিটি চ্যালেঞ্জের সম্পূর্ণ সমাধান ও ব্যাখ্যা, অন্য শিক্ষার্থীদের জন্য লেখা।',
             'projects.p4.title': 'LeetCode সলিউশন',
             'projects.p4.body': 'অপটিমাইজড LeetCode সলিউশনের ক্রমবর্ধমান সংগ্রহ, প্রতিটির সাথে জটিলতা বিশ্লেষণ।',
+            'projects.p5.title': 'Who Stays On',
+            'projects.p5.body': 'লোড শেডিংয়ের সময় কোন দোকানে বিদ্যুৎ থাকবে তা ঠিক করা একটি MILP সলভার। সফটওয়্যার হ্যাকাথনে পঞ্চম স্থান।',
+            'projects.p6.title': 'GridMan (GridWise)',
+            'projects.p6.body': 'এমন একটি এনার্জি ডিসপ্যাচ ইঞ্জিন যেখানে LLM অনুরোধ পড়ে আর লিনিয়ার প্রোগ্রামিং সলভার গণিত করে।',
+            'projects.p7.title': 'StockRoom',
+            'projects.p7.body': 'একটি 3NF ইনভেন্টরি কন্ট্রোল সিস্টেম, যেখানে অ্যাক্সেস নিয়ন্ত্রণ API আর ডেটাবেস — দুই স্তরেই enforced।',
+            'projects.p8.title': 'FindItBD',
+            'projects.p8.body': 'একটি সার্চেই পাঁচটি বাংলাদেশি স্টোরের দাম তুলনা করে সেরা দাম খুঁজে বের করে।',
+            'projects.p9.title': 'Predict The Pitch',
+            'projects.p9.body': 'দুই লেয়ারের XGBoost মডেল দিয়ে চ্যাম্পিয়ন্স লিগ ম্যাচের এক্সপেক্টেড গোল ও জয়ের সম্ভাবনা।',
+            'projects.p10.title': 'Bit Bin',
+            'projects.p10.body': 'এমন একটি পেস্টবিন যেখানে ব্রাউজারেই এনক্রিপশন হয়, সার্ভার শুধু সাইফারটেক্সট রাখে।',
+
+            /* ---- blog ---- */
+            'blog.title': 'বানানোর সময়ের নোট',
+            'blog.subtitle': 'যা শিখলাম, আর আগে নিজেকে যা বলতাম',
 
             /* ---- experience ---- */
             'exp.title': 'শিক্ষা ও অভিজ্ঞতা',
