@@ -10,7 +10,7 @@ token-driven design system, and full **bilingual English / বাংলা** sup
 ---
 
 ## 🔗 Live Demo
-**[View Live Project →](https://dipraj-portfolio-ten.vercel.app/)**
+**[View Live Project →](https://dipraj.bond/)**
 
 ## 📸 Screenshots
 <p align="center">
@@ -33,12 +33,19 @@ is individually indexable rather than hidden behind a modal.
 
 | Route | Purpose |
 |---|---|
-| `/` | Homepage — `Person` + `WebSite` + `ItemList` JSON-LD |
+| `/` | Homepage — `Person` + `WebSite` + `ItemList` + `Blog` JSON-LD |
 | `/projects/spam-it/` | Project case study — `SoftwareSourceCode` + `BreadcrumbList` + `WebPage` JSON-LD |
 | `/projects/cp-helper/` | ” |
 | `/projects/picoctf-2025-writeups/` | ” |
 | `/projects/leetcode-solutions/` | ” |
-| `/sitemap.xml` | Generated from the project registry |
+| `/projects/who-stays-on/` | ” |
+| `/projects/gridman-gridwise/` | ” |
+| `/projects/stockroom/` | ” |
+| `/projects/finditbd/` | ” |
+| `/projects/predict-the-pitch/` | ” |
+| `/projects/bit-bin/` | ” |
+| `/blog/<slug>/` | Blog post — `BlogPosting` + `BreadcrumbList` + `WebPage` JSON-LD |
+| `/sitemap.xml` | Generated from the project + post registries |
 | `/robots.txt` | `Allow: /` + sitemap reference |
 
 **What each route ships with**
@@ -52,11 +59,12 @@ is individually indexable rather than hidden behind a modal.
 - Breadcrumb navigation with `aria-label` and `aria-current="page"`
 
 **Single source of truth:** all project metadata lives in
-[`assets/js/projects.js`](assets/js/projects.js). The detail pages, the
-`sitemap.xml` and the homepage JSON-LD `ItemList` are all generated from it —
+[`assets/js/projects.js`](assets/js/projects.js) and all post metadata lives in
+[`assets/js/posts.js`](assets/js/posts.js). The detail pages, the
+`sitemap.xml` and the homepage JSON-LD `ItemList` are all generated from them —
 they can never drift apart. The homepage carries a `<!--BUILD:HOME_SCHEMA-->`
-marker that the build replaces with the `Person` + `WebSite` + `ItemList`
-graph.
+marker that the build replaces with the `Person` + `WebSite` + `ItemList` +
+`Blog` graph.
 
 ### Project registry
 
@@ -70,8 +78,32 @@ graph.
   tech: ['Python', 'Automation'],      // tech stack
   highlights: ['…'],                  // measurable outcomes
   repo: 'https://github.com/…',
+  demo: 'https://…',                  // optional live deployment
   image: '…', imageAlt: '…',
   updated: '2026-11-16',              // drives <lastmod>
+}
+```
+
+### Blog registry
+
+Posts live in `assets/js/posts.js`. The body is an array of blocks so the build
+can emit real semantic HTML without parsing markdown:
+
+```js
+{
+  slug: 'why-i-stopped-trusting-the-llm-with-the-maths',
+  metaTitle: '…',        // 50–60 chars
+  metaDescription: '…',  // 150–160 chars
+  date: '2026-11-02',    // drives <lastmod> and JSON-LD datePublished
+  category: 'Engineering',
+  readingTime: 6,        // minutes
+  body: [
+    { type: 'p', text: '…' },
+    { type: 'h2', text: '…' },
+    { type: 'ul', items: ['…', '…'] },
+    { type: 'quote', text: '…' },
+    { type: 'code', lang: 'python', text: '…' },
+  ],
 }
 ```
 
@@ -86,19 +118,19 @@ npm run check        # build + verify
 ```
 
 The build writes the **entire deployable site into `public/`** — the homepage,
-the four project pages, `sitemap.xml`, `robots.txt` and the `assets/` tree.
-`public/` is Vercel's output directory (`vercel.json#outputDirectory`), so only
-site content is published; `package.json`, `tools/` and the README stay out of
-the deployed tree. `public/` is generated, gitignored, and rebuilt from scratch
-on every run.
+the ten project pages, the five blog posts, `sitemap.xml`, `robots.txt` and
+the `assets/` tree. `public/` is Vercel's output directory
+(`vercel.json#outputDirectory`), so only site content is published;
+`package.json`, `tools/` and the README stay out of the deployed tree.
+`public/` is generated, gitignored, and rebuilt from scratch on every run.
 
 `verify:seo` asserts, for each route: HTTP 200, clean console, valid JSON-LD
 with the expected schema types, exactly one `<h1>`, no heading-level skips,
 `alt` + `width`/`height` on every image, absolute OG/Twitter image URLs, unique
 `<title>` and canonical across all pages, CLS < 0.1, and that every
-`/projects/` link resolves. It also checks that `/robots.txt` and `/sitemap.xml`
-are served and that the sitemap lists every route. Screenshots land in
-`.seo-shots/`.
+`/projects/` and `/blog/` link resolves. It also checks that `/robots.txt` and
+`/sitemap.xml` are served and that the sitemap lists every route. Screenshots
+land in `.seo-shots/`.
 
 > **Note:** the project pages set `data-page-meta="static"` on `<body>`, which
 > tells the i18n layer *not* to overwrite their `<title>` with the homepage's.
@@ -124,6 +156,10 @@ progress bar. Auto-skips for users who prefer reduced motion.
 ### 🧩 Project Filtering
 Filter the grid by category (Tools / Web / Security / Algorithms) with an
 accessible empty state.
+
+### 📝 Blog
+Five write-ups derived from the projects, each on its own crawlable route with
+`BlogPosting` JSON-LD, breadcrumbs, reading time and prev/next navigation.
 
 ### 📊 Scroll Experience
 Scroll-progress bar, active-section scroll spy, staggered scroll reveals and
@@ -151,12 +187,15 @@ dipraj-portfolio/
 │   ├── css/
 │   │   └── style.css      # Design tokens, themes, components
 │   ├── images/            # Profile & preview images
+│   ├── resume.pdf         # Downloadable résumé
 │   └── js/
 │       ├── i18n.js        # EN/BN translation layer
 │       ├── projects.js    # Project registry (single source of truth)
+│       ├── posts.js       # Blog registry (single source of truth)
 │       └── script.js      # Behaviour modules
 ├── tools/
 │   ├── build-project-pages.js # Builds the site into public/
+│   ├── resume.html        # A4 résumé source (compiled to assets/resume.pdf)
 │   └── verify-seo.js          # Headless-Chrome SEO audit
 ├── index.html             # Homepage (JSON-LD injected at build time)
 ├── robots.txt
@@ -166,7 +205,8 @@ dipraj-portfolio/
 │   ├── sitemap.xml
 │   ├── robots.txt
 │   ├── assets/
-│   └── projects/<slug>/index.html
+│   ├── projects/<slug>/index.html
+│   └── blog/<slug>/index.html
 └── .gitignore
 ```
 
@@ -198,8 +238,9 @@ else inherits.
 3. **Open in Browser:**
    Simply open `index.html` or use the Live Server extension in VS Code.
 
-> **Note:** the hero has a *Download Résumé* button pointing at `assets/resume.pdf`.
-> Drop your PDF at that exact path (or update the `href` in `index.html`) before deploying.
+> **Note:** the hero has a *Download Résumé* button pointing at
+> `assets/resume.pdf`. The résumé is generated from `tools/resume.html`; edit
+> that file and recompile rather than hand-editing the PDF.
 
 ## 🌐 Adding a Language
 1. Add a locale block to `DICT` in `assets/js/i18n.js` and list the locale in `SUPPORTED`.
@@ -219,6 +260,18 @@ else inherits.
 4. Add a matching card to the project grid in `index.html` (title link +
    "Read case study" CTA pointing at `/projects/<slug>/`).
 5. Run `npm run check` to confirm the new route passes every check.
+
+## 📝 Adding a Blog Post
+1. Append an entry to the `POSTS` array in `assets/js/posts.js` with the body
+   blocks described above. The same `metaTitle` / `metaDescription` length
+   rules apply.
+2. Write it like a person, not a template: first person, concrete details,
+   contractions, no em dashes, no "in today's fast-paced world".
+3. Run `npm run build` to create `public/blog/<slug>/index.html` and add the
+   route to `public/sitemap.xml`.
+4. Add a matching card to the blog grid in `index.html` pointing at
+   `/blog/<slug>/`.
+5. Run `npm run check`.
 
 ## 🚀 Deployment Instructions
 This project is optimized for **Vercel**:
