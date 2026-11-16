@@ -1,11 +1,15 @@
 /**
- * build-project-pages.js — Renders one static HTML page per project.
+ * build-project-pages.js — Builds the deployable site into public/.
  *
  * Usage: node tools/build-project-pages.js
  *
  * The project registry lives in assets/js/projects.js. This script evaluates it
- * in a sandbox and writes projects/<slug>/index.html for each entry, so the
- * detail pages can never drift from the homepage grid or the sitemap.
+ * in a sandbox and writes public/projects/<slug>/index.html for each entry, so
+ * the detail pages can never drift from the homepage grid or the sitemap.
+ *
+ * The whole site is emitted into public/ because that is Vercel's output
+ * directory (see vercel.json#outputDirectory). Only site content lands there —
+ * package.json, the build tools and the README stay out of the published tree.
  *
  * Each generated page contains:
  *   - a unique <title> and <meta name="description"> (SEO ranges asserted below)
@@ -21,7 +25,11 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
+const OUT = path.join(ROOT, 'public');
 const REGISTRY = path.join(ROOT, 'assets', 'js', 'projects.js');
+
+/** Marker in index.html where the build injects the homepage JSON-LD. */
+const HOME_SCHEMA_MARKER = '<!--BUILD:HOME_SCHEMA-->';
 
 /* ---------- Load the registry in a sandbox so we can reuse it verbatim ---------- */
 
@@ -399,10 +407,26 @@ PROJECTS.forEach((p) => {
 
 /* ---------- Write ---------- */
 
+/** Recursively copy a directory tree. */
+function copyDir(src, dest) {
+    fs.mkdirSync(dest, { recursive: true });
+    for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+        const from = path.join(src, entry.name);
+        const to = path.join(dest, entry.name);
+        if (entry.isDirectory()) copyDir(from, to);
+        else fs.copyFileSync(from, to);
+    }
+}
+
+/* Start from a clean output directory so a removed project can never leave a
+   stale page behind in the published site. */
+fs.rmSync(OUT, { recursive: true, force: true });
+fs.mkdirSync(OUT, { recursive: true });
+
 let written = 0;
 PROJECTS.forEach((p, i) => {
     assertSeo(p);
-    const dir = path.join(ROOT, 'projects', p.slug);
+    const dir = path.join(OUT, 'projects', p.slug);
     fs.mkdirSync(dir, { recursive: true });
     const out = path.join(dir, 'index.html');
     fs.writeFileSync(out, renderPage(p, i, translationBundle), 'utf8');
@@ -410,8 +434,8 @@ PROJECTS.forEach((p, i) => {
     written += 1;
 });
 
-/* Also emit the homepage JSON-LD so the Person + WebSite schema is identical
-   wherever it is injected — a second, static copy for the homepage. */
+/* ---------- Homepage JSON-LD (Person + WebSite + ItemList) ---------- */
+
 const homeSchema = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -426,10 +450,40 @@ const homeSchema = {
             publisher: { '@id': site.origin + '/#person' },
             author: { '@id': site.origin + '/#person' },
         },
+        {
+            '@type': 'ItemList',
+            '@id': site.origin + '/#projects',
+            name: 'Projects by Dipraj Mitra',
+            itemListOrder: 'https://schema.org/ItemListOrderAscending',
+            numberOfItems: PROJECTS.length,
+            itemListElement: PROJECTS.map((p, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                url: abs(`/projects/${p.slug}/`),
+                name: p.title,
+            })),
+        },
     ],
 };
 
-console.log(`\n${written} project page(s) written.`);
+/* ---------- Copy the static parts of the site into public/ ---------- */
+
+const homepage = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+if (!homepage.includes(HOME_SCHEMA_MARKER)) {
+    throw new Error(`index.html is missing the ${HOME_SCHEMA_MARKER} marker — the homepage JSON-LD cannot be injected.`);
+}
+fs.writeFileSync(
+    path.join(OUT, 'index.html'),
+    homepage.replace(HOME_SCHEMA_MARKER, `<script type="application/ld+json">\n${jsonLd(homeSchema)}\n    </script>`),
+    'utf8'
+);
+console.log('wrote public/index.html');
+
+fs.copyFileSync(path.join(ROOT, 'robots.txt'), path.join(OUT, 'robots.txt'));
+console.log('wrote public/robots.txt');
+
+copyDir(path.join(ROOT, 'assets'), path.join(OUT, 'assets'));
+console.log('wrote public/assets/');
 
 /* ---------- sitemap.xml (generated from the same registry) ---------- */
 
@@ -453,8 +507,8 @@ ${PROJECTS.map((p) => `    <url>
 </urlset>
 `;
 
-fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), sitemap, 'utf8');
-console.log('wrote sitemap.xml');
+fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sitemap, 'utf8');
+console.log('wrote public/sitemap.xml');
 
-console.log('\nHomepage JSON-LD to paste into index.html:\n');
-console.log(jsonLd(homeSchema));
+console.log(`\n${written} project page(s) written to public/.`);
+
