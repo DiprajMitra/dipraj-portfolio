@@ -361,7 +361,7 @@ ${p.tech.map((t) => `                            <li>${esc(t)}</li>`).join('\n')
                     </div>
 
                     <div class="pd-hero__media">
-                        <img src="${esc(p.image)}" alt="${esc(p.imageAlt)}" width="900" height="600" fetchpriority="high">
+                        <img src="${esc(p.image)}" alt="${esc(p.imageAlt)}" width="640" height="400" fetchpriority="high">
                     </div>
                 </div>
             </div>
