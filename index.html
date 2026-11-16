@@ -3,17 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Dipraj Mitra Chandon — Computer Science student and developer building software, security tooling and AI experiments.">
+    <title>Dipraj Mitra — Software Engineer &amp; Competitive Programmer</title>
+    <meta name="description" content="Dipraj Mitra is a software engineer and competitive programmer building full-stack apps, security tooling and AI experiments at the University of Asia Pacific.">
     <meta name="author" content="Dipraj Mitra Chandon">
     <meta name="theme-color" content="#0b1120">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+    <link rel="canonical" href="https://dipraj.bond/">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Dipraj Mitra Chandon — Software Engineer">
-    <meta property="og:description" content="Computer Science student building software, security tooling and AI experiments.">
-    <meta property="og:image" content="assets/images/preview.png">
-    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:site_name" content="Dipraj Mitra Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Dipraj Mitra — Software Engineer &amp; Competitive Programmer">
+    <meta property="og:description" content="Software engineer and competitive programmer building full-stack apps, security tooling and AI experiments. Browse individually indexable project write-ups.">
+    <meta property="og:url" content="https://dipraj.bond/">
+    <meta property="og:image" content="https://dipraj.bond/assets/images/preview.png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="640">
+    <meta property="og:image:alt" content="Dipraj Mitra — Software Engineer portfolio preview">
 
-    <title>Dipraj Mitra Chandon — Software Engineer</title>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dipraj Mitra — Software Engineer &amp; Competitive Programmer">
+    <meta name="twitter:description" content="Software engineer and competitive programmer building full-stack apps, security tooling and AI experiments. Browse individually indexable project write-ups.">
+    <meta name="twitter:image" content="https://dipraj.bond/assets/images/preview.png">
+    <meta name="twitter:image:alt" content="Dipraj Mitra — Software Engineer portfolio preview">
+
+    <!-- Structured data: Person + WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://dipraj.bond/#person",
+          "name": "Dipraj Mitra",
+          "alternateName": "Dipraj Mitra Chandon",
+          "url": "https://dipraj.bond/",
+          "jobTitle": "Software Engineer & Computer Science Student",
+          "description": "Software Engineer, Full-Stack Developer, Competitive Programmer and Cybersecurity (CTF) competitor at the University of Asia Pacific.",
+          "affiliation": {
+            "@type": "CollegeOrUniversity",
+            "name": "University of Asia Pacific"
+          },
+          "knowsAbout": [
+            "Full-Stack Development",
+            "FastAPI",
+            "React",
+            "Machine Learning",
+            "Competitive Programming",
+            "Cybersecurity",
+            "Capture The Flag (CTF)",
+            "Data Structures and Algorithms",
+            "Python",
+            "C++",
+            "JavaScript",
+            "Automation"
+          ],
+          "sameAs": [
+            "https://github.com/Dipraj2",
+            "https://www.linkedin.com/in/dipraj-mitra/",
+            "https://x.com/DiprajMitra_007",
+            "https://www.instagram.com/diprajmitra123/"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://dipraj.bond/#website",
+          "name": "Dipraj Mitra Portfolio",
+          "url": "https://dipraj.bond/",
+          "description": "Portfolio of Dipraj Mitra, Software Engineer and Computer Science student at the University of Asia Pacific.",
+          "inLanguage": "en",
+          "publisher": { "@id": "https://dipraj.bond/#person" },
+          "author": { "@id": "https://dipraj.bond/#person" }
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://dipraj.bond/#projects",
+          "name": "Projects by Dipraj Mitra",
+          "itemListOrder": "https://schema.org/ItemListOrderAscending",
+          "numberOfItems": 4,
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "url": "https://dipraj.bond/projects/spam-it/",
+              "name": "Spam.it"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "url": "https://dipraj.bond/projects/cp-helper/",
+              "name": "CP Helper (VS Code)"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "url": "https://dipraj.bond/projects/picoctf-2025-writeups/",
+              "name": "picoCTF 2025 Writeups"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "url": "https://dipraj.bond/projects/leetcode-solutions/",
+              "name": "LeetCode Solutions"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
 
     <!-- Fonts: Inter (Latin UI) + JetBrains Mono (code) + Noto Sans Bengali (Bangla) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +119,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icons: inline SVG sprite (no render-blocking CDN) -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='monospace' font-weight='bold' fill='%236366f1'>D</text></svg>">
 
@@ -162,6 +260,7 @@
 
                     <p class="hero__greeting reveal" data-reveal data-i18n="hero.greeting">Hello, I'm</p>
                     <h1 class="hero__name reveal" data-reveal data-i18n="hero.name">Dipraj Mitra Chandon</h1>
+                    <p class="hero__role-label">Software Engineer &amp; Competitive Programmer</p>
                     <h2 class="hero__role">
                         <span class="hero__role-prefix" aria-hidden="true">&gt;</span>
                         <span id="typing-text" aria-live="off"></span>
@@ -180,7 +279,7 @@
                         <a href="#contact" class="btn btn--ghost">
                             <span data-i18n="hero.cta.contact">Let's Talk</span>
                         </a>
-                        <a href="assets/resume.pdf" class="btn btn--ghost" download>
+                        <a href="/assets/resume.pdf" class="btn btn--ghost" download>
                             <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-download"/></svg>
                             <span data-i18n="hero.cta.resume">Download Résumé</span>
                         </a>
@@ -208,7 +307,7 @@
 
                 <div class="hero__visual reveal" data-reveal>
                     <div class="hero__image-wrap">
-                        <img src="assets/images/dj.png" alt="Portrait of Dipraj Mitra Chandon" class="hero__img" width="420" height="420" data-i18n-attr="alt:hero.portrait">
+                        <img src="/assets/images/dj.png" alt="Portrait of Dipraj Mitra Chandon" class="hero__img" width="420" height="420" fetchpriority="high" data-i18n-attr="alt:hero.portrait">
                     </div>
                     <div class="hero__badge-float hero__badge-float--1" aria-hidden="true">
                         <svg class="icon"><use width="24" height="24" href="#icon-code"/></svg><span>Java · C++</span>
@@ -338,14 +437,16 @@
                             <span class="project__cat">Automation</span>
                         </div>
                         <div class="project__body">
-                            <h3 class="project__title" data-i18n="projects.p1.title">Spam.it</h3>
+                            <h3 class="project__title">
+                                <a class="project__title-link" href="/projects/spam-it/" data-i18n-text="projects.p1.title">Spam.it</a>
+                            </h3>
                             <p class="project__desc" data-i18n="projects.p1.body"></p>
                             <ul class="tags">
                                 <li>Python</li><li>Automation</li><li>Scripting</li>
                             </ul>
-                            <a class="project__link" href="https://github.com/Dipraj2/Spam.it" target="_blank" rel="noopener noreferrer">
-                                <span data-i18n="projects.view">View repository</span>
-                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            <a class="project__cta" href="/projects/spam-it/">
+                                <span data-i18n="projects.read">Read case study</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
                             </a>
                         </div>
                     </article>
@@ -356,14 +457,16 @@
                             <span class="project__cat">Developer Tool</span>
                         </div>
                         <div class="project__body">
-                            <h3 class="project__title" data-i18n="projects.p2.title">CP Helper (VS Code)</h3>
+                            <h3 class="project__title">
+                                <a class="project__title-link" href="/projects/cp-helper/" data-i18n-text="projects.p2.title">CP Helper (VS Code)</a>
+                            </h3>
                             <p class="project__desc" data-i18n="projects.p2.body"></p>
                             <ul class="tags">
                                 <li>C++</li><li>VS Code</li><li>Config</li>
                             </ul>
-                            <a class="project__link" href="https://github.com/Dipraj2/Competitive_Programming_Helper-VS_CODE-" target="_blank" rel="noopener noreferrer">
-                                <span data-i18n="projects.view">View repository</span>
-                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            <a class="project__cta" href="/projects/cp-helper/">
+                                <span data-i18n="projects.read">Read case study</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
                             </a>
                         </div>
                     </article>
@@ -374,14 +477,16 @@
                             <span class="project__cat">Security</span>
                         </div>
                         <div class="project__body">
-                            <h3 class="project__title" data-i18n="projects.p3.title">picoCTF 2025 Writeups</h3>
+                            <h3 class="project__title">
+                                <a class="project__title-link" href="/projects/picoctf-2025-writeups/" data-i18n-text="projects.p3.title">picoCTF 2025 Writeups</a>
+                            </h3>
                             <p class="project__desc" data-i18n="projects.p3.body"></p>
                             <ul class="tags">
                                 <li>CTF</li><li>Security</li><li>Writeups</li>
                             </ul>
-                            <a class="project__link" href="https://github.com/Dipraj2/picoCTF2025" target="_blank" rel="noopener noreferrer">
-                                <span data-i18n="projects.view">View repository</span>
-                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            <a class="project__cta" href="/projects/picoctf-2025-writeups/">
+                                <span data-i18n="projects.read">Read case study</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
                             </a>
                         </div>
                     </article>
@@ -392,14 +497,16 @@
                             <span class="project__cat">Algorithms</span>
                         </div>
                         <div class="project__body">
-                            <h3 class="project__title" data-i18n="projects.p4.title">LeetCode Solutions</h3>
+                            <h3 class="project__title">
+                                <a class="project__title-link" href="/projects/leetcode-solutions/" data-i18n-text="projects.p4.title">LeetCode Solutions</a>
+                            </h3>
                             <p class="project__desc" data-i18n="projects.p4.body"></p>
                             <ul class="tags">
                                 <li>DSA</li><li>Algorithms</li><li>Problem Solving</li>
                             </ul>
-                            <a class="project__link" href="https://github.com/Dipraj2/LeetCode_Solution_Dipraj" target="_blank" rel="noopener noreferrer">
-                                <span data-i18n="projects.view">View repository</span>
-                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            <a class="project__cta" href="/projects/leetcode-solutions/">
+                                <span data-i18n="projects.read">Read case study</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
                             </a>
                         </div>
                     </article>
@@ -567,7 +674,8 @@
     <!-- Toast -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script src="assets/js/i18n.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="/assets/js/i18n.js"></script>
+    <script src="/assets/js/projects.js"></script>
+    <script src="/assets/js/script.js"></script>
 </body>
 </html>

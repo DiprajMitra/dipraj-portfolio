@@ -887,6 +887,19 @@ html[data-lang='bn'] .hero__name {
     color: var(--text);
 }
 
+/* Static role line: states the primary job title in the DOM so the page's
+   subject is readable without waiting on the typing animation. */
+.hero__role-label {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+}
+
+html[data-lang='bn'] .hero__role-label {
+    font-family: var(--font-bn);
+}
+
 .hero__role {
     display: flex;
     align-items: center;
@@ -1412,7 +1425,227 @@ html[data-lang='bn'] .skill-group h4 {
     font-weight: 500;
 }
 
-.project__link {
+.projects__empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 1rem;
+}
+
+/* ==========================================================================
+   10b. Project detail pages (/projects/<slug>/)
+   ========================================================================== */
+
+.pd-hero {
+    padding-top: calc(var(--nav-h) + var(--sp-7));
+    padding-bottom: var(--sp-7);
+    border-bottom: 1px solid var(--border);
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: var(--sp-5);
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+}
+
+.breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+}
+
+.breadcrumb a:hover {
+    color: var(--accent);
+}
+
+.breadcrumb__sep {
+    color: var(--text-subtle);
+    opacity: 0.6;
+}
+
+.breadcrumb [aria-current='page'] {
+    color: var(--text);
+    font-weight: 500;
+}
+
+.pd-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--sp-7);
+    align-items: center;
+}
+
+.pd-hero__cat {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    margin-bottom: var(--sp-3);
+    border-radius: var(--radius-full);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.pd-hero__title {
+    font-size: var(--fs-2xl);
+    line-height: 1.1;
+    margin-bottom: var(--sp-3);
+}
+
+.pd-hero__tagline {
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+    max-width: 56ch;
+    margin-bottom: var(--sp-5);
+}
+
+.pd-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.pd-hero__media {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-subtle);
+    aspect-ratio: 16 / 10;
+}
+
+.pd-hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pd-section {
+    padding-block: var(--sp-8);
+    border-bottom: 1px solid var(--border);
+}
+
+.pd-section:last-of-type { border-bottom: 0; }
+
+.pd-section__title {
+    font-size: var(--fs-xl);
+    margin-bottom: var(--sp-4);
+}
+
+.pd-prose {
+    max-width: 72ch;
+    color: var(--text-muted);
+    font-size: var(--fs-base);
+    line-height: 1.75;
+}
+
+.pd-prose p + p { margin-top: 1rem; }
+
+.pd-list {
+    display: grid;
+    gap: 0.85rem;
+    max-width: 72ch;
+    margin-top: var(--sp-4);
+    list-style: none;
+    padding: 0;
+}
+
+.pd-list li {
+    position: relative;
+    padding-left: 1.9rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.pd-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 9px;
+    height: 9px;
+    border-radius: var(--radius-full);
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.pd-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    list-style: none;
+    padding: 0;
+    margin-top: var(--sp-5);
+}
+
+.pd-tags li {
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+}
+
+.pd-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-4);
+    padding-block: var(--sp-7);
+}
+
+.pd-nav__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: var(--sp-4) var(--sp-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+}
+
+.pd-nav__item:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+}
+
+.pd-nav__label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+}
+
+.pd-nav__title {
+    font-weight: 600;
+    color: var(--text);
+    font-size: var(--fs-md);
+}
+
+.pd-nav__item--next { text-align: right; }
+
+/* --- Card hover affordance now that cards link to a route --- */
+.project__title-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+}
+
+.project__title-link:hover { color: var(--accent); }
+
+.project__cta {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
@@ -1421,20 +1654,24 @@ html[data-lang='bn'] .skill-group h4 {
     color: var(--accent);
 }
 
-.project__link .icon {
+.project__cta .icon {
     width: 1em;
     height: 1em;
     transition: transform var(--dur) var(--ease);
 }
 
-.project__link:hover .icon {
+.project:hover .project__cta .icon {
     transform: translate(3px, -3px);
 }
 
-.projects__empty {
-    text-align: center;
-    color: var(--text-muted);
-    padding: 3rem 1rem;
+@media (max-width: 900px) {
+    .pd-hero__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
+    .pd-hero__media { order: -1; }
+}
+
+@media (max-width: 620px) {
+    .pd-nav { grid-template-columns: 1fr; }
+    .pd-nav__item--next { text-align: left; }
 }
 
 /* ==========================================================================

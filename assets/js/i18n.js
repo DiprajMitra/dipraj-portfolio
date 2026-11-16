@@ -18,8 +18,8 @@
     const DICT = {
         en: {
             /* ---- meta / document ---- */
-            'meta.description': 'Dipraj Mitra Chandon — Computer Science student and developer building software, security tooling and AI experiments.',
-            'meta.title': 'Dipraj Mitra Chandon — Software Engineer',
+            'meta.description': 'Dipraj Mitra is a software engineer and competitive programmer building full-stack apps, security tooling and AI experiments at the University of Asia Pacific.',
+            'meta.title': 'Dipraj Mitra — Software Engineer & Competitive Programmer',
 
             /* ---- loader ---- */
             'loader.title': 'bash — dipraj.bond — 80x24',
@@ -92,7 +92,15 @@
             'projects.filter.security': 'Security',
             'projects.filter.algorithms': 'Algorithms',
             'projects.view': 'View repository',
+            'projects.read': 'Read case study',
+            'projects.all': 'All projects',
             'projects.empty': 'No projects in this category yet.',
+
+            /* ---- project detail page ---- */
+            'pd.overview': 'Overview',
+            'pd.features': 'What it does',
+            'pd.stack': 'Tech stack',
+            'pd.source': 'Source code',
             'projects.p1.title': 'Spam.it',
             'projects.p1.body': 'An automated comment-spamming tool built to explore scripting, rate limiting and automation patterns end to end.',
             'projects.p2.title': 'CP Helper (VS Code)',
@@ -221,7 +229,15 @@
             'projects.filter.security': 'সিকিউরিটি',
             'projects.filter.algorithms': 'অ্যালগরিদম',
             'projects.view': 'রিপোজিটরি দেখুন',
+            'projects.read': 'বিস্তারিত পড়ুন',
+            'projects.all': 'সব প্রকল্প',
             'projects.empty': 'এই ক্যাটাগরিতে এখনো কোনো প্রকল্প নেই।',
+
+            /* ---- project detail page ---- */
+            'pd.overview': 'সংক্ষিপ্ত পরিচিতি',
+            'pd.features': 'কী করে',
+            'pd.stack': 'টেক স্ট্যাক',
+            'pd.source': 'সোর্স কোড',
             'projects.p1.title': 'Spam.it',
             'projects.p1.body': 'একটি স্বয়ংক্রিয় কমেন্ট-স্প্যামিং টুল — স্ক্রিপ্টিং, রেট লিমিটিং ও অটোমেশন প্যাটার্ন বোঝার জন্য তৈরি।',
             'projects.p2.title': 'CP Helper (VS Code)',
@@ -278,8 +294,16 @@
     /**
      * Resolve a translation key for a locale, falling back to English and then
      * to the raw key so a missing string is visible rather than blank.
+     *
+     * Page-level bundles (window.PORTFOLIO_TRANSLATIONS) are consulted first —
+     * they carry the long-form project copy that is too verbose for the
+     * shared DICT and is emitted per-page by the build script.
      */
     function translate(locale, key) {
+        const pageBundle = global.PORTFOLIO_TRANSLATIONS && global.PORTFOLIO_TRANSLATIONS[locale];
+        if (pageBundle && Object.prototype.hasOwnProperty.call(pageBundle, key)) {
+            return pageBundle[key];
+        }
         const bundle = DICT[locale] || DICT.en;
         if (Object.prototype.hasOwnProperty.call(bundle, key)) {
             return bundle[key];
@@ -353,16 +377,32 @@
             });
         });
 
+        // 2b. Text of an element that wraps nested markup:
+        //     <a data-i18n-text="projects.p1.title">Spam.it</a>
+        //     Sets textContent without destroying the child elements.
+        document.querySelectorAll('[data-i18n-text]').forEach(function (el) {
+            const key = el.getAttribute('data-i18n-text');
+            el.textContent = translate(loc, key);
+        });
+
         // 3. Document-level metadata
         const html = document.documentElement;
         html.setAttribute('lang', loc === 'bn' ? 'bn' : 'en');
         html.setAttribute('data-lang', loc);
 
-        const desc = document.querySelector('meta[name="description"]');
-        if (desc) desc.setAttribute('content', translate(loc, 'meta.description'));
+        // Pages that own their SEO metadata (e.g. /projects/<slug>/) opt out of
+        // the locale swap with data-page-meta="static" on <body>. Overwriting a
+        // project page's unique <title> with the homepage's would collapse every
+        // project into one duplicate title in the index.
+        const pageMeta = document.body && document.body.getAttribute('data-page-meta') === 'static';
 
-        const title = document.querySelector('title');
-        if (title) title.textContent = translate(loc, 'meta.title');
+        if (!pageMeta) {
+            const desc = document.querySelector('meta[name="description"]');
+            if (desc) desc.setAttribute('content', translate(loc, 'meta.description'));
+
+            const title = document.querySelector('title');
+            if (title) title.textContent = translate(loc, 'meta.title');
+        }
 
         // 4. Language switch button label shows the *other* language
         const langBtn = document.querySelector('[data-lang-switch]');

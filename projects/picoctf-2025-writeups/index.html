@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>picoCTF 2025 Writeups — Full CTF Challenge Walkthroughs</title>
+    <meta name="description" content="Complete writeups for the picoCTF 2025 cybersecurity competition, covering crypto, forensics, web exploitation and reverse engineering challenges step by step.">
+    <meta name="author" content="Dipraj Mitra Chandon">
+    <meta name="theme-color" content="#0b1120">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+
+    <link rel="canonical" href="https://dipraj.bond/projects/picoctf-2025-writeups/">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Dipraj Mitra Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="picoCTF 2025 Writeups — Full CTF Challenge Walkthroughs">
+    <meta property="og:description" content="Complete writeups for the picoCTF 2025 cybersecurity competition, covering crypto, forensics, web exploitation and reverse engineering challenges step by step.">
+    <meta property="og:url" content="https://dipraj.bond/projects/picoctf-2025-writeups/">
+    <meta property="og:image" content="https://dipraj.bond/assets/images/preview.png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="640">
+    <meta property="og:image:alt" content="Cybersecurity terminal with green code and a padlock symbol">
+    <meta property="article:author" content="Dipraj Mitra Chandon">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="picoCTF 2025 Writeups — Full CTF Challenge Walkthroughs">
+    <meta name="twitter:description" content="Complete writeups for the picoCTF 2025 cybersecurity competition, covering crypto, forensics, web exploitation and reverse engineering challenges step by step.">
+    <meta name="twitter:image" content="https://dipraj.bond/assets/images/preview.png">
+    <meta name="twitter:image:alt" content="Cybersecurity terminal with green code and a padlock symbol">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='monospace' font-weight='bold' fill='%236366f1'>D</text></svg>">
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": "https://dipraj.bond/projects/picoctf-2025-writeups/#code",
+      "name": "picoCTF 2025 Writeups",
+      "description": "Complete writeups for the picoCTF 2025 cybersecurity competition, covering crypto, forensics, web exploitation and reverse engineering challenges step by step.",
+      "url": "https://dipraj.bond/projects/picoctf-2025-writeups/",
+      "codeRepository": "https://github.com/Dipraj2/picoCTF2025",
+      "programmingLanguage": [
+        "CTF",
+        "Security",
+        "Writeups"
+      ],
+      "author": {
+        "@id": "https://dipraj.bond/#person"
+      },
+      "creator": {
+        "@id": "https://dipraj.bond/#person"
+      },
+      "dateModified": "2026-11-16",
+      "keywords": "CTF, Security, Writeups",
+      "inLanguage": "en",
+      "abstract": "CTF competitions are excellent for learning, but the writeups that get published afterwards are often terse — a flag, or a single command, with no explanation of why the approach worked. That leaves beginners stuck at exactly the point where they need the reasoning. This repository documents the full picoCTF 2025 competition with a writeup for every challenge solved. Each one walks through the reasoning step by step, includes the actual command transcripts so results are reproducible, and covers the standard categories: cryptography, forensics, web exploitation and reverse engineering. The goal was a resource another student could follow end to end without external help.",
+      "image": "https://dipraj.bond/assets/images/preview.png"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://dipraj.bond/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projects",
+          "item": "https://dipraj.bond/#projects"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "picoCTF 2025 Writeups",
+          "item": "https://dipraj.bond/projects/picoctf-2025-writeups/"
+        }
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://dipraj.bond/projects/picoctf-2025-writeups/#webpage",
+      "url": "https://dipraj.bond/projects/picoctf-2025-writeups/",
+      "name": "picoCTF 2025 Writeups — Full CTF Challenge Walkthroughs",
+      "description": "Complete writeups for the picoCTF 2025 cybersecurity competition, covering crypto, forensics, web exploitation and reverse engineering challenges step by step.",
+      "isPartOf": {
+        "@id": "https://dipraj.bond/#website"
+      },
+      "about": {
+        "@id": "https://dipraj.bond/#person"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-11-16",
+      "primaryImageOfPage": "https://dipraj.bond/assets/images/preview.png"
+    }
+  ]
+}
+    </script>
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('portfolio.theme');
+                var mode = saved === 'light' || saved === 'dark'
+                    ? saved
+                    : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', mode);
+                document.documentElement.classList.add(mode === 'light' ? 'light-mode' : 'dark-mode');
+
+                var lang = localStorage.getItem('portfolio.lang');
+                if (lang !== 'bn' && lang !== 'en') {
+                    lang = (navigator.languages || [navigator.language || 'en'])
+                        .some(function (l) { return String(l).toLowerCase().slice(0, 2) === 'bn'; }) ? 'bn' : 'en';
+                }
+                document.documentElement.setAttribute('lang', lang);
+                document.documentElement.setAttribute('data-lang', lang);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-lang', 'en');
+            }
+        })();
+    </script>
+</head>
+<body class="dark-mode" data-page-meta="static">
+
+    <svg class="svg-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.24 2.75.12 3.04.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12.5.5Z"/></symbol>
+        <symbol id="icon-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05a3.75 3.75 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></symbol>
+        <symbol id="icon-mail" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16a1 1 0 1 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 1 1 1-1Zm0 1.5v.6l8 5 8-5v-.6M4 18.5V7.9l8 5 8-5v10.6"/></symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+        <symbol id="icon-arrow-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+        <symbol id="icon-chevron-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+        <symbol id="icon-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6m0-6L10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+        <symbol id="icon-moon" viewBox="0 0 24 24"><path fill="currentColor" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></symbol>
+        <symbol id="icon-sun" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-1-13h2v3h-2V2Zm0 17h2v3h-2v-3ZM2 11h3v2H2v-2Zm17 0h3v2h-3v-2ZM4.22 5.64l1.42-1.42 2.12 2.12L6.34 7.76 4.22 5.64Zm12.02 12.02 1.42-1.42 2.12 2.12-1.42 1.42-2.12-2.12Zm2.12-13.44 1.42 1.42-2.12 2.12-1.42-1.42 2.12-2.12ZM6.34 16.24l1.42 1.42-2.12 2.12-1.42-1.42 2.12-2.12Z"/></symbol>
+        <symbol id="icon-code" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10-3 12"/></symbol>
+        <symbol id="icon-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 13.9 8l5.6 1.9-5.6 1.9L12 17.4l-1.9-5.6L4.5 9.9 10.1 8 12 2.5ZM19 15l.95 2.55L22.5 18.5l-2.55.95L19 22l-.95-2.55L15.5 18.5l2.55-.95L19 15Z"/></symbol>
+    </svg>
+
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to main content</a>
+
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <header class="header" id="site-header">
+        <nav class="navbar container" aria-label="Primary">
+            <a href="/" class="logo">
+                <span class="logo__mark" aria-hidden="true">&gt;_</span>
+                <span class="logo__text">dipraj<span class="logo__accent">.bond</span></span>
+            </a>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="/#home" class="nav-link" data-i18n="nav.home">Home</a></li>
+                <li><a href="/#about" class="nav-link" data-i18n="nav.about">About</a></li>
+                <li><a href="/#projects" class="nav-link" data-i18n="nav.projects">Projects</a></li>
+                <li><a href="/#experience" class="nav-link" data-i18n="nav.experience">Experience</a></li>
+                <li><a href="/#contact" class="nav-link" data-i18n="nav.contact">Contact</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button type="button" id="lang-toggle" class="lang-toggle" data-lang-switch aria-label="Switch language to Bangla">
+                    <span aria-hidden="true">বাং</span>
+                </button>
+                <button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch to light mode">
+                    <svg class="icon icon--moon" aria-hidden="true"><use width="20" height="20" href="#icon-moon"/></svg>
+                    <svg class="icon icon--sun" aria-hidden="true"><use width="20" height="20" href="#icon-sun"/></svg>
+                </button>
+                <button type="button" id="menu-toggle" class="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main">
+
+        <section class="pd-hero">
+            <div class="container">
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                    <a href="/" data-i18n="nav.home">Home</a>
+                    <span class="breadcrumb__sep" aria-hidden="true">/</span>
+                    <a href="/#projects" data-i18n="nav.projects">Projects</a>
+                    <span class="breadcrumb__sep" aria-hidden="true">/</span>
+                    <span aria-current="page">picoCTF 2025 Writeups</span>
+                </nav>
+
+                <div class="pd-hero__grid">
+                    <div class="pd-hero__content">
+                        <span class="pd-hero__cat">Security</span>
+                        <h1 class="pd-hero__title">picoCTF 2025 Writeups</h1>
+                        <p class="pd-hero__tagline" data-i18n="projects.picoctf-2025-writeups.tagline">Full, follow-along writeups for every picoCTF 2025 challenge.</p>
+                        <div class="pd-hero__actions">
+                            <a href="https://github.com/Dipraj2/picoCTF2025" class="btn btn--primary" target="_blank" rel="noopener noreferrer">
+                                <span data-i18n="projects.view">View repository</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                            </a>
+                            <a href="/#projects" class="btn btn--ghost">
+                                <span data-i18n="projects.all">All projects</span>
+                                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-right"/></svg>
+                            </a>
+                        </div>
+                        <ul class="pd-tags">
+                            <li>CTF</li>
+                            <li>Security</li>
+                            <li>Writeups</li>
+                        </ul>
+                    </div>
+
+                    <div class="pd-hero__media">
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="Cybersecurity terminal with green code and a padlock symbol" width="900" height="600" fetchpriority="high">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="pd-section">
+            <div class="container">
+                <h2 class="pd-section__title" data-i18n="pd.overview">Overview</h2>
+                <div class="pd-prose">
+                    <p data-i18n="projects.picoctf-2025-writeups.problem">CTF competitions are excellent for learning, but the writeups that get published afterwards are often terse — a flag, or a single command, with no explanation of why the approach worked. That leaves beginners stuck at exactly the point where they need the reasoning.</p>
+                    <p data-i18n="projects.picoctf-2025-writeups.solution">This repository documents the full picoCTF 2025 competition with a writeup for every challenge solved. Each one walks through the reasoning step by step, includes the actual command transcripts so results are reproducible, and covers the standard categories: cryptography, forensics, web exploitation and reverse engineering. The goal was a resource another student could follow end to end without external help.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="pd-section">
+            <div class="container">
+                <h2 class="pd-section__title" data-i18n="pd.features">What it does</h2>
+                <ul class="pd-list">
+                    <li>Step-by-step solutions for every solved challenge in the competition</li>
+                    <li>Categories spanning cryptography, forensics, web exploitation and reversing</li>
+                    <li>Command transcripts so every result can be reproduced exactly</li>
+                    <li>Written for learners, explaining the reasoning rather than only the answer</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="pd-section">
+            <div class="container">
+                <h2 class="pd-section__title" data-i18n="pd.stack">Tech stack</h2>
+                <div class="pd-prose">
+                    <p>Built with CTF, Security, Writeups.</p>
+                </div>
+                <ul class="pd-tags">
+                    <li>CTF</li>
+                    <li>Security</li>
+                    <li>Writeups</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="pd-section">
+            <div class="container">
+                <h2 class="pd-section__title" data-i18n="pd.source">Source code</h2>
+                <div class="pd-prose">
+                    <p>The full source for picoCTF 2025 Writeups is published on GitHub and is free to read, clone and fork. If you spot an improvement or want to report a bug, open an issue on the repository.</p>
+                </div>
+                <div class="pd-hero__actions">
+                    <a href="https://github.com/Dipraj2/picoCTF2025" class="btn btn--primary" target="_blank" rel="noopener noreferrer">
+                        <span data-i18n="projects.view">View repository</span>
+                        <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-external"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <nav class="container pd-nav" aria-label="More projects">
+            <a class="pd-nav__item" href="https://dipraj.bond/projects/cp-helper/">
+                <span class="pd-nav__label">← Previous</span>
+                <span class="pd-nav__title">CP Helper (VS Code)</span>
+            </a>
+            <a class="pd-nav__item pd-nav__item--next" href="https://dipraj.bond/projects/leetcode-solutions/">
+                <span class="pd-nav__label">Next →</span>
+                <span class="pd-nav__title">LeetCode Solutions</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <p class="footer__copy">
+                &copy; <span id="year">2026</span> Dipraj Mitra Chandon. <span data-i18n="footer.built">Built with love and too much coffee.</span>
+            </p>
+            <a href="/#home" class="footer__top">
+                <span data-i18n="footer.backToTop">Back to top</span>
+                <svg class="icon" aria-hidden="true"><use width="24" height="24" href="#icon-arrow-up"/></svg>
+            </a>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="/assets/js/i18n.js"></script>
+    <script>
+        window.PORTFOLIO_TRANSLATIONS = {
+  "en": {
+    "projects.spam-it.problem": "Posting the same content across many platforms by hand is repetitive, slow and easy to get rate-limited on. Teams and creators needed a script that would pace itself correctly instead of hammering an endpoint and getting blocked.",
+    "projects.spam-it.solution": "Spam.it is a Python automation script that takes a list of targets, works through them on a configurable schedule, and respects a per-host rate limit. Failed requests are retried with exponential backoff, and every run is written to a log so the behaviour is auditable after the fact. It was built as a practical study of scripting patterns, throttling and safe automation defaults.",
+    "projects.spam-it.tagline": "A Python automation engine for scheduled, rate-limited bulk posting.",
+    "projects.cp-helper.problem": "Competitive programming has a punishing setup cost. Every contest meant manually recreating the same template, wiring up a build command, and fighting the debugger on a fresh machine — time that could have gone into solving the problem.",
+    "projects.cp-helper.solution": "CP Helper packages that entire setup into a VS Code workspace. It ships a ready-to-use C++ template, a local judge that compiles a solution and pipes it through a test file, a debugger configuration for GNU gdb, and task definitions for build, run and test. The goal was to cut the per-contest setup from minutes to a single keystroke.",
+    "projects.cp-helper.tagline": "A complete competitive-programming environment for C++ in VS Code.",
+    "projects.picoctf-2025-writeups.problem": "CTF competitions are excellent for learning, but the writeups that get published afterwards are often terse — a flag, or a single command, with no explanation of why the approach worked. That leaves beginners stuck at exactly the point where they need the reasoning.",
+    "projects.picoctf-2025-writeups.solution": "This repository documents the full picoCTF 2025 competition with a writeup for every challenge solved. Each one walks through the reasoning step by step, includes the actual command transcripts so results are reproducible, and covers the standard categories: cryptography, forensics, web exploitation and reverse engineering. The goal was a resource another student could follow end to end without external help.",
+    "projects.picoctf-2025-writeups.tagline": "Full, follow-along writeups for every picoCTF 2025 challenge.",
+    "projects.leetcode-solutions.problem": "A solution that merely passes the judge is often not the solution you want to remember. Without knowing why an approach works — and where it breaks — the pattern does not transfer to the next problem, and the same mistake gets made again under interview pressure.",
+    "projects.leetcode-solutions.solution": "This repository collects LeetCode solutions where the algorithm is the point. Each submission documents its time and space complexity, explains the reasoning behind the chosen approach, and notes the edge cases where that approach stops being efficient. Writing the same problem in both C++ and Python cross-checks the mental model against two different runtime characteristics.",
+    "projects.leetcode-solutions.tagline": "Optimised LeetCode solutions with complexity notes for every approach."
+  },
+  "bn": {
+    "projects.spam-it.problem": "একই কনটেন্ট অনেক প্ল্যাটফর্মে হাতে পোস্ট করা একটু কাজ, ধীর এবং রেট-লিমিটে পড়ার ঝুঁকিপূর্ণ। এমন একটি স্ক্রিপ্ট দরকার ছিল যা নিজে থেকে সঠিক গতিতে কাজ করবে, অন্ততক্ষণে ইন্ডেক্সে চাপ দেবে না।",
+    "projects.spam-it.solution": "Spam.it একটি পাইথন অটোমেশন স্ক্রিপ্ট যা টার্গেটের তালিকা নিয়ে কাজ করে এবং প্রতি হোস্টের জন্য নির্ধারিত রেট লিমিট মেনে চলে। অস্থায়ী নেটওয়ার্ক ব্যর্থতায় এক্সপোনেনশিয়াল ব্যাকঅফ দিয়ে আবার চেষ্টা করা হয় এবং প্রতিটি রানের লগ রাখা হয়, ফলে পরে যাচাই করা সহজ হয়। এটি স্ক্রিপ্টিং, থ্রটলিং ও নিরাপদ অটোমেশনের ডিফল্ট নিয়ে একটি বাস্তব গবেষণা হিসেবে তৈরি।",
+    "projects.spam-it.tagline": "সময়সূচি অনুযায়ী, রেট-লিমিট সহ বাল্ক পোস্টিংয়ের জন্য পাইথন অটোমেশন ইঞ্জিন।",
+    "projects.cp-helper.problem": "কম্পিটিটিভ প্রোগ্রামিংয়ের সেটআপ খরচ বেশি। প্রতিটি কনটেস্টে একই টেমপ্লেট আবার বানাতে হতো, বিল্ড কমান্ড মানাতে হতো আর নতুন মেশিনে ডিবাগার নিয়ে ঝামেলা হতো — সেই সময়টা সমস্যা সমাধানে ব্যয় হওয়া উচিত ছিল না।",
+    "projects.cp-helper.solution": "CP Helper পুরো সেটআপটি একটি VS Code ওয়ার্কস্পেসে প্যাকেজ করে। এতে প্রস্তুত C++ টেমপ্লেট, একটি লোকাল জাজ (যা সলিউশন কম্পাইল করে টেস্ট ফাইলের মধ্যে চালায়), GNU gdb-এর ডিবাগার কনফিগ এবং বিল্ড/রান/টেস্ট টাস্ক সংজ্ঞা রয়েছে। লক্ষ্য ছিল প্রতিটি কনটেস্টের সেটআপ কয়েক মিনিট থেকে এক কী-প্রেসে নামিয়ে আনা।",
+    "projects.cp-helper.tagline": "VS Code-এ C++ এর জন্য একটি সম্পূর্ণ কম্পিটিটিভ প্রোগ্রামিং পরিবেশ।",
+    "projects.picoctf-2025-writeups.problem": "CTF প্রতিযোগিতা শেখার জন্য চমৎকার, কিন্তু পরে প্রকাশিত রাইটআপগুলো প্রায়ই সংক্ষিপ্ত — শুধু একটি ফ্ল্যাগ বা একটি কমান্ড, কেন কাজ করেছে তার ব্যাখ্যা ছাড়াই। ফলে শিক্ষার্থীরা ঠিক সেই জায়গায় আটকে যায় যেখানে তাদের যুক্তি প্রয়োজন।",
+    "projects.picoctf-2025-writeups.solution": "এই রিপোজিটরিতে picoCTF 2025 পুরো প্রতিযোগিতার ডকুমেন্টেশন রয়েছে — সমাধান করা প্রতিটি চ্যালেঞ্জের একটি রাইটআপ সহ। প্রতিটি রাইটআপ ধাপে ধাপে যুক্তি ব্যাখ্যা করে, ফলাফল পুনরায় উৎপাদনযোগ্য কমান্ড ট্রান্সক্রিপ্ট রাখে এবং ক্রিপ্টোগ্রাফি, ফরেনসিক্স, ওয়েব এক্সপ্লয়টেশন ও রিভার্স ইঞ্জিনিয়ারিংসহ প্রধান ক্যাটাগরিগুলো কভার করে। লক্ষ্য ছিল এমন একটি রিসোর্স যা অন্য শিক্ষার্থী বাইরের সাহায্য ছাড়াই শুরু থেকে শেষ পর্যন্ত অনুসরণ করতে পারে।",
+    "projects.picoctf-2025-writeups.tagline": "picoCTF 2025 এর প্রতিটি চ্যালেঞ্জের সম্পূর্ণ, ধাপে ধাপে ব্যাখ্যা।",
+    "projects.leetcode-solutions.problem": "শুধু জাজে পাস করে যাওয়া সমাধান প্রায়ই এমন সমাধান নয় যা মনে রাখা উচিত। কোন পদ্ধতি কেন কাজ করে — এবং কোথায় ভেঙে পড়ে — তা জানা না থাকলে প্যাটার্নটি পরের সমস্যায়ে ট্রান্সফার হয় না, আর ইন্টারভিউয়ের চাপে একই ভুল আবার হয়।",
+    "projects.leetcode-solutions.solution": "এই রিপোজিটরিতে এমন LeetCode সলিউশন সংগ্রহ করা হয়েছে যেখানে অ্যালগরিদমটাই মূল বিষয়। প্রতিটি সমাধানে টাইম ও স্পেস কমপ্লেক্সিটি উল্লেখ করা হয়েছে, নির্বাচিত পদ্ধতির যুক্তি ব্যাখ্যা করা হয়েছে এবং সেই পদ্ধতি আর কোথায় দক্ষ না হওয়ার এজ কেসগুলো নোট করা হয়েছে। একই সমস্যা C++ ও Python দুটোতে লিখে দুটি ভিন্ন রানটাইম বৈশিষ্ট্যের মাধ্যমে মানসিক মডেল যাচাই করা হয়।",
+    "projects.leetcode-solutions.tagline": "প্রতিটি পদ্ধতির জটিলতা বিশ্লেষণসহ অপটিমাইজড LeetCode সলিউশন।"
+  }
+};
+    </script>
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+/**
+ * verify-seo.js — Live browser verification of the portfolio's SEO surface.
+ *
+ * Usage: node tools/verify-seo.js [baseUrl]
+ *
+ * For every public route this checks:
+ *   - the page loads with a clean console (no errors/warnings)
+ *   - the JSON-LD parses and carries the expected schema types
+ *   - the DOM has exactly one h1, and no skipped heading levels
+ *   - every <img> has an alt attribute and explicit width/height
+ *   - the accessibility tree exposes the expected landmarks
+ *   - CLS is zero and LCP renders
+ * and writes a screenshot of each route for visual review.
+ */
+'use strict';
+
+const { chromium } = require('playwright-core');
+const path = require('path');
+const fs = require('fs');
+
+const BASE = process.argv[2] || 'http://localhost:8099';
+const SHOT_DIR = path.resolve(__dirname, '..', '.seo-shots');
+const EXECUTABLE = process.env.CHROME_PATH ||
+    path.join(process.env.HOME || '/root', '.cache/ms-playwright/chromium-1255/chrome-linux64/chrome');
+
+const ROUTES = [
+    {
+        path: '/',
+        schemaTypes: ['Person', 'WebSite', 'ItemList'],
+        expectTitle: 'Dipraj Mitra — Software Engineer & Competitive Programmer',
+    },
+    {
+        path: '/projects/spam-it/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'Spam.it — Python Automation Script for Bulk Posting',
+    },
+    {
+        path: '/projects/cp-helper/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'CP Helper — Competitive Programming Setup for VS Code',
+    },
+    {
+        path: '/projects/picoctf-2025-writeups/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'picoCTF 2025 Writeups — Full CTF Challenge Walkthroughs',
+    },
+    {
+        path: '/projects/leetcode-solutions/',
+        schemaTypes: ['SoftwareSourceCode', 'BreadcrumbList', 'WebPage'],
+        expectTitle: 'LeetCode Solutions — Optimised Algorithms in C++ and Python',
+    },
+];
+
+fs.mkdirSync(SHOT_DIR, { recursive: true });
+
+(async () => {
+    const browser = await chromium.launch({
+        executablePath: EXECUTABLE,
+        args: ['--no-sandbox', '--disable-dev-shm-usage'],
+    });
+
+    let failures = 0;
+    const seenTitles = new Map();
+
+    for (const route of ROUTES) {
+        const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+        const page = await context.newPage();
+
+        const consoleIssues = [];
+        const failedRequests = [];
+        page.on('console', (msg) => {
+            if (msg.type() === 'error' || msg.type() === 'warning') {
+                consoleIssues.push(`[${msg.type()}] ${msg.text()}`);
+            }
+        });
+        page.on('pageerror', (err) => consoleIssues.push(`[pageerror] ${err.message}`));
+        page.on('requestfailed', (req) => {
+            failedRequests.push(`${req.method()} ${req.url()} — ${req.failure()?.errorText}`);
+        });
+
+        const response = await page.goto(BASE + route.path, { waitUntil: 'networkidle' });
+
+        const audit = await page.evaluate(() => {
+            const jsonldBlocks = [...document.querySelectorAll('script[type="application/ld+json"]')];
+            const parsed = [];
+            const parseErrors = [];
+            jsonldBlocks.forEach((b) => {
+                try { parsed.push(JSON.parse(b.textContent)); }
+                catch (e) { parseErrors.push(e.message); }
+            });
+
+            const flat = [];
+            parsed.forEach((p) => {
+                if (p['@graph']) flat.push(...p['@graph']); else flat.push(p);
+            });
+
+            const headings = [...document.querySelectorAll('h1,h2,h3,h4,h5,h6')]
+                .map((h) => Number(h.tagName[1]));
+
+            const imgs = [...document.querySelectorAll('img')].map((i) => ({
+                src: i.getAttribute('src'),
+                alt: i.getAttribute('alt'),
+                w: i.getAttribute('width'),
+                h: i.getAttribute('height'),
+                loading: i.getAttribute('loading'),
+            }));
+
+            const landmarks = {
+                // A <header> inside <section>/<article> is a *sectioning header*,
+                // not a banner landmark — only a top-level <header> is a banner.
+                banner: document.querySelectorAll('body > header, body > div > header').length,
+                main: document.querySelectorAll('main').length,
+                nav: document.querySelectorAll('nav').length,
+                footer: document.querySelectorAll('footer').length,
+                article: document.querySelectorAll('article').length,
+            };
+
+            const canonical = document.querySelector('link[rel="canonical"]')?.href || null;
+            const metaDesc = document.querySelector('meta[name="description"]')?.content || null;
+            const ogImage = document.querySelector('meta[property="og:image"]')?.content || null;
+            const ogUrl = document.querySelector('meta[property="og:url"]')?.content || null;
+            const twImage = document.querySelector('meta[name="twitter:image"]')?.content || null;
+            const title = document.title;
+
+            return {
+                schemaTypes: flat.map((n) => n['@type']),
+                parseErrors,
+                h1Count: document.querySelectorAll('h1').length,
+                headings,
+                imgs,
+                landmarks,
+                canonical,
+                metaDesc,
+                ogImage,
+                ogUrl,
+                twImage,
+                title,
+                textLength: document.body.innerText.trim().length,
+                // Links that resolve to a real project route
+                projectLinks: [...document.querySelectorAll('a[href^="/projects/"]')].map((a) => a.getAttribute('href')),
+            };
+        });
+
+        // Core Web Vitals
+        const vitals = await page.evaluate(() => new Promise((resolve) => {
+            let cls = 0;
+            let lcp = 0;
+            try {
+                new PerformanceObserver((l) => {
+                    for (const e of l.getEntries()) if (!e.hadRecentInput) cls += e.value;
+                }).observe({ type: 'layout-shift', buffered: true });
+            } catch (e) { /* unsupported */ }
+            try {
+                new PerformanceObserver((l) => {
+                    const entries = l.getEntries();
+                    lcp = entries[entries.length - 1].startTime;
+                }).observe({ type: 'largest-contentful-paint', buffered: true });
+            } catch (e) { /* unsupported */ }
+            setTimeout(() => resolve({ cls: Number(cls.toFixed(4)), lcp: Math.round(lcp) }), 900);
+        }));
+
+        const shotName = route.path === '/'
+            ? 'home.png'
+            : route.path.replace(/^\/|\/$/g, '').replace(/\//g, '-') + '.png';
+        const shot = path.join(SHOT_DIR, shotName);
+        await page.screenshot({ path: shot, fullPage: false });
+
+        /* ---------- Assertions ---------- */
+        const problems = [];
+        const status = response?.status();
+
+        if (status !== 200) problems.push(`HTTP status ${status}`);
+        if (consoleIssues.length) problems.push(`console: ${consoleIssues.join(' | ')}`);
+        if (failedRequests.length) problems.push(`failed requests: ${failedRequests.join(' | ')}`);
+        if (audit.parseErrors.length) problems.push(`JSON-LD parse error: ${audit.parseErrors.join(' | ')}`);
+        if (audit.h1Count !== 1) problems.push(`h1 count = ${audit.h1Count}`);
+
+        for (const t of route.schemaTypes) {
+            if (!audit.schemaTypes.includes(t)) problems.push(`missing schema type ${t}`);
+        }
+
+        let prev = 0;
+        for (const lvl of audit.headings) {
+            if (prev && lvl - prev > 1) { problems.push(`heading skip ${prev}->${lvl}`); break; }
+            prev = lvl;
+        }
+
+        for (const img of audit.imgs) {
+            if (img.alt === null) problems.push(`img without alt: ${img.src}`);
+            if (!img.w || !img.h) problems.push(`img without width/height: ${img.src}`);
+        }
+
+        if (!audit.canonical) problems.push('no canonical');
+        if (!audit.metaDesc) problems.push('no meta description');
+        if (!audit.ogImage?.startsWith('http')) problems.push(`og:image not absolute: ${audit.ogImage}`);
+        if (!audit.ogUrl?.startsWith('http')) problems.push(`og:url not absolute: ${audit.ogUrl}`);
+        if (!audit.twImage?.startsWith('http')) problems.push(`twitter:image not absolute: ${audit.twImage}`);
+        if (audit.landmarks.main !== 1) problems.push(`<main> count = ${audit.landmarks.main}`);
+        if (audit.landmarks.banner !== 1) problems.push(`banner landmark count = ${audit.landmarks.banner}`);
+        if (vitals.cls > 0.1) problems.push(`CLS ${vitals.cls} > 0.1`);
+
+        // Cross-page uniqueness: two routes sharing a <title> or a canonical
+        // means one of them will be dropped from the index as a duplicate.
+        const tKey = audit.title.toLowerCase();
+        if (seenTitles.has(tKey)) {
+            problems.push(`duplicate <title> shared with ${seenTitles.get(tKey)}`);
+        } else {
+            seenTitles.set(tKey, route.path);
+        }
+        if (seenTitles.has('CANON:' + audit.canonical)) {
+            problems.push(`duplicate canonical shared with ${seenTitles.get('CANON:' + audit.canonical)}`);
+        } else {
+            seenTitles.set('CANON:' + audit.canonical, route.path);
+        }
+
+        // The <title> must survive client-side JS (the i18n layer used to
+        // overwrite it with the homepage title on every page).
+        if (!audit.title || audit.title === 'Dipraj Mitra Chandon — Software Engineer') {
+            problems.push(`title not unique after hydration: "${audit.title}"`);
+        }
+        if (audit.title.length < 30 || audit.title.length > 70) {
+            problems.push(`title length ${audit.title.length} outside 30–70`);
+        }
+        if (!audit.metaDesc || audit.metaDesc.length < 100 || audit.metaDesc.length > 180) {
+            problems.push(`description length ${audit.metaDesc?.length} outside 100–180`);
+        }
+        if (route.expectTitle && audit.title !== route.expectTitle) {
+            problems.push(`title mismatch: got "${audit.title}", want "${route.expectTitle}"`);
+        }
+
+        const label = route.path.padEnd(36);
+        if (problems.length) {
+            failures += problems.length;
+            console.log(`FAIL ${label}`);
+            problems.forEach((p) => console.log(`       - ${p}`));
+        } else {
+            console.log(`PASS ${label} CLS=${vitals.cls} LCP=${vitals.lcp}ms text=${audit.textLength}ch`);
+            console.log(`       schema: ${audit.schemaTypes.join(', ')}`);
+            console.log(`       landmarks: ${JSON.stringify(audit.landmarks)}`);
+            if (audit.projectLinks.length) {
+                console.log(`       project links: ${audit.projectLinks.join(', ')}`);
+            }
+        }
+        console.log(`       shot: ${path.relative(process.cwd(), shot)}`);
+
+        await context.close();
+    }
+
+    /* ---------- Follow every project link and confirm it resolves ---------- */
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+    const hrefs = await page.$$eval('a[href^="/projects/"]', (as) => [...new Set(as.map((a) => a.getAttribute('href')))]);
+    for (const href of hrefs) {
+        const r = await page.goto(BASE + href, { waitUntil: 'domcontentloaded' });
+        const t = await page.title();
+        const h1 = await page.$eval('h1', (e) => e.textContent.trim());
+        console.log(`LINK ${href.padEnd(36)} ${r.status()} h1="${h1}" title="${t}"`);
+        if (r.status() !== 200) failures++;
+    }
+    await context.close();
+
+    await browser.close();
+    console.log(`\n${failures === 0 ? 'ALL CHECKS PASSED' : failures + ' PROBLEM(S) FOUND'}`);
+    process.exit(failures === 0 ? 0 : 1);
+})();

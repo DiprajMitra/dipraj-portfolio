@@ -26,6 +26,73 @@ token-driven design system, and full **bilingual English / বাংলা** sup
 - **Contact System:** FormSubmit.co (AJAX/Fetch) with client-side validation
 - **Hosting:** Vercel
 
+## 🔍 SEO Architecture
+
+Every project has its **own crawlable route** with unique metadata, so each one
+is individually indexable rather than hidden behind a modal.
+
+| Route | Purpose |
+|---|---|
+| `/` | Homepage — `Person` + `WebSite` + `ItemList` JSON-LD |
+| `/projects/spam-it/` | Project case study — `SoftwareSourceCode` + `BreadcrumbList` + `WebPage` JSON-LD |
+| `/projects/cp-helper/` | ” |
+| `/projects/picoctf-2025-writeups/` | ” |
+| `/projects/leetcode-solutions/` | ” |
+| `/sitemap.xml` | Generated from the project registry |
+| `/robots.txt` | `Allow: /` + sitemap reference |
+
+**What each route ships with**
+- Unique `<title>` (50–60 chars) and `<meta name="description">` (150–160 chars)
+- Self-referencing `<link rel="canonical">` — absolute, one per page
+- Full Open Graph (`og:title`/`og:description`/`og:url`/`og:type`/`og:image`/`og:site_name`)
+  and Twitter Card (`summary_large_image`) tags with **absolute** image URLs
+- JSON-LD structured data injected into `<head>`
+- Exactly one `<h1>`, no skipped heading levels, semantic landmarks
+- Descriptive `alt` text and explicit `width`/`height` on every image (CLS-safe)
+- Breadcrumb navigation with `aria-label` and `aria-current="page"`
+
+**Single source of truth:** all project metadata lives in
+[`assets/js/projects.js`](assets/js/projects.js). The detail pages and
+`sitemap.xml` are generated from it — they can never drift apart.
+
+### Project registry
+
+```js
+{
+  slug: 'spam-it',                    // URL segment
+  metaTitle: '…',                     // 50–60 chars
+  metaDescription: '…',               // 150–160 chars
+  problem: '…', solution: '…',        // indexable prose
+  problemBn: '…', solutionBn: '…',    // Bangla prose
+  tech: ['Python', 'Automation'],      // tech stack
+  highlights: ['…'],                  // measurable outcomes
+  repo: 'https://github.com/…',
+  image: '…', imageAlt: '…',
+  updated: '2026-11-16',              // drives <lastmod>
+}
+```
+
+### Build & verify
+
+```bash
+npm install          # playwright-core, for verification only
+npm run build        # regenerate projects/*/index.html + sitemap.xml
+npm run serve        # http://localhost:8099
+npm run verify:seo   # headless Chrome audit of every route
+npm run check        # build + verify
+```
+
+`verify:seo` asserts, for each route: HTTP 200, clean console, valid JSON-LD
+with the expected schema types, exactly one `<h1>`, no heading-level skips,
+`alt` + `width`/`height` on every image, absolute OG/Twitter image URLs, unique
+`<title>` and canonical across all pages, CLS < 0.1, and that every
+`/projects/` link resolves. Screenshots land in `.seo-shots/`.
+
+> **Note:** the project pages set `data-page-meta="static"` on `<body>`, which
+> tells the i18n layer *not* to overwrite their `<title>` with the homepage's.
+> Without it every project page would ship a duplicate title and be dropped
+> from the index as a duplicate.
+
 ## ✨ Key Features
 
 ### 💻 Terminal Loader
@@ -74,8 +141,20 @@ dipraj-portfolio/
 │   ├── images/            # Profile & preview images
 │   └── js/
 │       ├── i18n.js        # EN/BN translation layer
+│       ├── projects.js    # Project registry (single source of truth)
 │       └── script.js      # Behaviour modules
-├── index.html             # Single entry point
+├── projects/
+│   ├── spam-it/index.html            # Generated — do not edit by hand
+│   ├── cp-helper/index.html
+│   ├── picoctf-2025-writeups/index.html
+│   └── leetcode-solutions/index.html
+├── tools/
+│   ├── build-project-pages.js # Renders project pages + sitemap.xml
+│   └── verify-seo.js          # Headless-Chrome SEO audit
+├── index.html             # Homepage
+├── sitemap.xml            # Generated
+├── robots.txt
+├── vercel.json            # cleanUrls, trailingSlash, canonical redirects
 └── .gitignore
 ```
 
@@ -114,6 +193,19 @@ else inherits.
 1. Add a locale block to `DICT` in `assets/js/i18n.js` and list the locale in `SUPPORTED`.
 2. Add the matching font stack to `html[data-lang="xx"]` rules in `assets/css/style.css`.
 3. Add the locale to the detection list in the inline `<head>` script in `index.html`.
+
+## ➕ Adding a Project
+1. Append an entry to the `PROJECTS` array in `assets/js/projects.js`.
+   Keep `metaTitle` at 50–60 characters and `metaDescription` at 150–160 —
+   the build script asserts both and will fail loudly otherwise.
+2. Write the `problem` / `solution` prose. This is the body copy search
+   engines index, so describe the problem, the approach and the outcome —
+   not just the tech stack.
+3. Run `npm run build`. This creates `projects/<slug>/index.html`, adds the
+   route to `sitemap.xml`, and regenerates the translation bundle.
+4. Add a matching card to the project grid in `index.html` (title link +
+   "Read case study" CTA pointing at `/projects/<slug>/`).
+5. Run `npm run verify:seo` to confirm the new route passes every check.
 
 ## 🚀 Deployment Instructions
 This project is optimized for **Vercel**:
