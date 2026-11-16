@@ -94,6 +94,14 @@
                     type: 'p',
                     text: 'I also kept a fallback path: when the LLM call times out or fails, a deterministic extractor handles the request using regex and heuristics. It is worse than the model, but it is always there, and it never invents a constraint. A system with a reliable fallback and an unreliable fast path beats a system with only the unreliable fast path.',
                 },
+                {
+                    type: 'links',
+                    items: [
+                        { text: 'GridMan GridWise on GitHub', href: 'https://github.com/DiprajMitra/GridMan' },
+                        { text: 'GridMan GridWise live demo', href: 'https://grid-man.vercel.app' },
+                        { text: 'GridMan GridWise case study', href: '/projects/gridman-gridwise/' },
+                    ],
+                },
             ],
         },
         {
@@ -181,6 +189,14 @@
                     type: 'p',
                     text: 'The other thing worth remembering is how much time the modelling takes. The solver call is instant. Getting the model right, with the right variables and the right constraints in the right places, took me most of the build. That is normal, and it is not wasted time.',
                 },
+                {
+                    type: 'links',
+                    items: [
+                        { text: 'Who Stays On on GitHub', href: 'https://github.com/DiprajMitra/Who-Stays-On' },
+                        { text: 'Who Stays On live demo', href: 'https://who-stays-on.vercel.app' },
+                        { text: 'Who Stays On case study', href: '/projects/who-stays-on/' },
+                    ],
+                },
             ],
         },
         {
@@ -255,6 +271,14 @@
                 {
                     type: 'p',
                     text: 'The repository is still growing and still rough around the edges. But the entries I have written this way are the ones I remember, which is the whole point.',
+                },
+                {
+                    type: 'links',
+                    items: [
+                        { text: 'LeetCode solutions on GitHub', href: 'https://github.com/DiprajMitra/LeetCode_Solution_Dipraj' },
+                        { text: 'LeetCode Solutions case study', href: '/projects/leetcode-solutions/' },
+                        { text: 'CP Helper on GitHub', href: 'https://github.com/DiprajMitra/Competitive_Programming_Helper-VS_CODE-' },
+                    ],
                 },
             ],
         },
@@ -332,6 +356,14 @@
                     type: 'p',
                     text: 'I would also spend more time on the client side key derivation settings. PBKDF2 iteration counts are a number you set once and forget about, and that number is the actual security of the whole scheme. Making it configurable, and showing the user what it is set to, is the kind of thing that matters more than it looks.',
                 },
+                {
+                    type: 'links',
+                    items: [
+                        { text: 'Bit Bin on GitHub', href: 'https://github.com/DiprajMitra/Bit_Bin' },
+                        { text: 'Bit Bin live demo', href: 'https://bitbin.vercel.app' },
+                        { text: 'Bit Bin case study', href: '/projects/bit-bin/' },
+                    ],
+                },
             ],
         },
         {
@@ -407,6 +439,14 @@
                 {
                     type: 'p',
                     text: 'None of this makes the code easy. The technical work is still the hard part, and it is still most of the work. But the parts around it, the scoping, the demo, the pitch, are what turn a working project into a placed one, and they are cheap to practise compared to the hours spent on the solver itself.',
+                },
+                {
+                    type: 'links',
+                    items: [
+                        { text: 'Who Stays On on GitHub', href: 'https://github.com/DiprajMitra/Who-Stays-On' },
+                        { text: 'GridMan GridWise on GitHub', href: 'https://github.com/DiprajMitra/GridMan' },
+                        { text: 'FindItBD on GitHub', href: 'https://github.com/DiprajMitra/FinditBD' },
+                    ],
                 },
             ],
         },

@@ -2358,6 +2358,50 @@ html[data-lang='bn'] .field label {
 
 .blog-body li { margin-bottom: 0.5rem; }
 
+/* The "related links" block at the end of a post. Reads as a list of things
+   to go and look at, so it gets card styling rather than bullet styling. */
+.blog-body .blog-links {
+    list-style: none;
+    padding-left: 0;
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+}
+
+.blog-body .blog-links li {
+    margin-bottom: 0;
+}
+
+.blog-body .blog-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: border-color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
+}
+
+.blog-body .blog-links a::after {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: 0.6;
+}
+
+.blog-body .blog-links a:hover {
+    border-color: var(--accent);
+    transform: translateX(3px);
+}
+
 .blog-body li::marker { color: var(--accent); }
 
 .blog-body strong { color: var(--text); }
