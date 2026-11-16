@@ -467,6 +467,60 @@ fs.mkdirSync(SHOT_DIR, { recursive: true });
                 linkProblems.forEach((p) => console.log(`       - ${p}`));
             }
         }
+
+        /* The Open Graph image must resolve and be a real image at the
+           declared size. A 404 here produces a link preview with no image
+           at all, and nothing on the page shows it — it only shows up in
+           the feed, where you are not looking. */
+        {
+            const ogProblems = [];
+            const res = await fetch(BASE + '/');
+            const html = res.ok ? await res.text() : '';
+            const ogSrc = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1] || null;
+
+            if (!ogSrc) {
+                ogProblems.push('homepage has no og:image');
+            } else if (!ogSrc.startsWith('http')) {
+                ogProblems.push(`og:image is not absolute: ${ogSrc}`);
+            } else {
+                const ogRes = await fetch(BASE + new URL(ogSrc).pathname);
+                if (!ogRes.ok) {
+                    ogProblems.push(`og:image does not resolve: ${ogSrc} — HTTP ${ogRes.status}`);
+                } else {
+                    const type = ogRes.headers.get('content-type') || '';
+                    if (!type.startsWith('image/')) {
+                        ogProblems.push(`og:image is served as "${type}", not an image`);
+                    }
+                    const bytes = Number(ogRes.headers.get('content-length') || 0);
+                    // 1200x630 JPEG lands around 75KB; 500KB means the card
+                    // was never re-encoded and every share downloads it.
+                    if (bytes > 300 * 1024) {
+                        ogProblems.push(`og:image is ${Math.round(bytes / 1024)}KB — too heavy for a link preview`);
+                    }
+                }
+            }
+
+            /* Every page must point at the same card, and the declared
+               dimensions must match the real ones. */
+            for (const r of ROUTES) {
+                const rres = await fetch(BASE + r.path);
+                const rhtml = rres.ok ? await rres.text() : '';
+                const rOg = rhtml.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+                if (!rOg) ogProblems.push(`${r.path} has no og:image`);
+                else if (ogSrc && rOg !== ogSrc) ogProblems.push(`${r.path} og:image differs: ${rOg}`);
+                const w = rhtml.match(/<meta property="og:image:width" content="(\d+)"/)?.[1];
+                const h = rhtml.match(/<meta property="og:image:height" content="(\d+)"/)?.[1];
+                if (w !== '1200' || h !== '630') {
+                    ogProblems.push(`${r.path} declares og:image ${w}x${h}, expected 1200x630`);
+                }
+            }
+
+            console.log(`FILE ${'/assets/images/og-card.jpg'.padEnd(36)} ${ogProblems.length ? ogProblems.length + ' problem(s)' : 'ok'}`);
+            if (ogProblems.length) {
+                failures += ogProblems.length;
+                ogProblems.forEach((p) => console.log(`       - ${p}`));
+            }
+        }
     }
 
     await browser.close();

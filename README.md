@@ -14,7 +14,7 @@ token-driven design system, and full **bilingual English / বাংলা** sup
 
 ## 📸 Screenshots
 <p align="center">
-  <img src="assets/images/preview.png" alt="Portfolio Preview" width="800px">
+  <img src="assets/images/og-card.jpg" alt="Open Graph card" width="800px">
 </p>
 
 ## 🛠 Tech Stack
@@ -46,7 +46,8 @@ is individually indexable rather than hidden behind a modal.
 | `/projects/bit-bin/` | ” |
 | `/blog/<slug>/` | Blog post — `BlogPosting` + `BreadcrumbList` + `WebPage` JSON-LD |
 | `/sitemap.xml` | Generated from the project + post registries |
-| `/robots.txt` | `Allow: /` + sitemap reference |
+| `/feed.xml` | RSS 2.0, generated from the post registry |
+| `/robots.txt` | `Allow: /` + sitemap and feed references |
 
 **What each route ships with**
 - Unique `<title>` (50–60 chars) and `<meta name="description">` (150–160 chars)
@@ -65,6 +66,38 @@ is individually indexable rather than hidden behind a modal.
 they can never drift apart. The homepage carries a `<!--BUILD:HOME_SCHEMA-->`
 marker that the build replaces with the `Person` + `WebSite` + `ItemList` +
 `Blog` graph.
+
+### Identity graph
+
+One list, [`IDENTITIES` in the build script](tools/build-project-pages.js),
+feeds two things:
+
+| Where | What | Why |
+|---|---|---|
+| `Person.sameAs` (JSON-LD) | `https://github.com/DiprajMitra`, … | Lets a search engine match a name to the accounts |
+| `rel="me"` links (footer) | The same URLs as visible text | The HTML-side equivalent — a crawler can match them without parsing the schema |
+
+They are generated from the same array, so they cannot drift. The audit
+asserts that every page carries the `rel="me"` links and that each
+`sameAs` entry has a matching one.
+
+### Open Graph card
+
+`assets/images/og-card.jpg` is a **purpose-built card**, not a screenshot of
+the site. An OG card is read at a glance in a feed, so it carries a name, a
+role and the domain, and nothing else.
+
+It is rendered from [`tools/og-card.html`](tools/og-card.html) by
+[`tools/build-og-card.js`](tools/build-og-card.js) using the site's own
+design tokens and font stack, so it stays in step with the design:
+
+```bash
+npm run build:og
+```
+
+Run it after any change to the site's colours or typography. The audit
+asserts the card resolves, is served as an image, is under 300KB, and that
+every page declares it at 1200×630.
 
 ### Project registry
 
@@ -116,14 +149,15 @@ can emit real semantic HTML without parsing markdown:
 ```bash
 npm install          # playwright-core, for verification only
 npm run build        # generate the deployable site into public/
+npm run build:og     # re-render the Open Graph card from tools/og-card.html
 npm run serve        # http://localhost:8099 (serves public/)
 npm run verify:seo   # headless Chrome audit of every route
 npm run check        # build + verify
 ```
 
 The build writes the **entire deployable site into `public/`** — the homepage,
-the ten project pages, the five blog posts, `sitemap.xml`, `robots.txt` and
-the `assets/` tree. `public/` is Vercel's output directory
+the ten project pages, the five blog posts, `sitemap.xml`, `feed.xml`,
+`robots.txt` and the `assets/` tree. `public/` is Vercel's output directory
 (`vercel.json#outputDirectory`), so only site content is published;
 `package.json`, `tools/` and the README stay out of the deployed tree.
 `public/` is generated, gitignored, and rebuilt from scratch on every run.
@@ -211,7 +245,7 @@ dipraj-portfolio/
 ├── assets/
 │   ├── css/
 │   │   └── style.css      # Design tokens, themes, components
-│   ├── images/            # Profile & preview images
+│   ├── images/            # Portrait (PNG + WebP) and the OG card
 │   ├── resume.pdf         # Downloadable résumé
 │   └── js/
 │       ├── i18n.js        # EN/BN translation layer
@@ -221,6 +255,8 @@ dipraj-portfolio/
 │       └── script.js      # Behaviour modules
 ├── tools/
 │   ├── build-project-pages.js # Builds the site into public/
+│   ├── build-og-card.js  # Renders the Open Graph card
+│   ├── og-card.html       # OG card source (rendered to assets/images/og-card.jpg)
 │   ├── resume.html        # A4 résumé source (compiled to assets/resume.pdf)
 │   └── verify-seo.js          # Headless-Chrome SEO audit
 ├── index.html             # Homepage (JSON-LD injected at build time)
@@ -229,6 +265,7 @@ dipraj-portfolio/
 ├── public/                # GENERATED — the deployable site (gitignored)
 │   ├── index.html
 │   ├── sitemap.xml
+│   ├── feed.xml
 │   ├── robots.txt
 │   ├── assets/
 │   ├── projects/<slug>/index.html

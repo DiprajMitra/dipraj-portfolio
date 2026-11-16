@@ -57,7 +57,18 @@ const jsonLd = (obj) => JSON.stringify(obj, null, 2)
     .replace(/&/g, '\\u0026');
 
 const abs = (rel) => site.origin + rel;
-const OG_IMAGE = abs('/assets/images/preview.png');
+/**
+ * The Open Graph card.
+ *
+ * This is a purpose-built card, not a screenshot of the site — an OG card
+ * is read at a glance in a feed, so it carries a name, a role and the
+ * domain, and nothing else. It is rendered from tools/og-card.html by
+ * tools/build-og-card.js, so it stays in step with the design tokens.
+ *
+ * JPEG rather than PNG: the card is a gradient-heavy flat graphic, so
+ * lossless buys nothing and PNG weighs 325KB against JPEG's 75KB.
+ */
+const OG_IMAGE = abs('/assets/images/og-card.jpg');
 
 /**
  * The one list of identity profiles.
@@ -202,8 +213,9 @@ function renderPage(p, index, bundle) {
     <meta property="og:description" content="${esc(p.metaDescription)}">
     <meta property="og:url" content="${url}">
     <meta property="og:image" content="${OG_IMAGE}">
-    <meta property="og:image:width" content="1280">
-    <meta property="og:image:height" content="640">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="${esc(p.imageAlt)}">
     <meta property="article:author" content="${esc(site.authorFull)}">
 
@@ -551,8 +563,9 @@ function renderPost(post, index) {
     <meta property="og:description" content="${esc(post.metaDescription)}">
     <meta property="og:url" content="${url}">
     <meta property="og:image" content="${OG_IMAGE}">
-    <meta property="og:image:width" content="1280">
-    <meta property="og:image:height" content="640">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="${esc(post.title)}">
     <meta property="article:published_time" content="${published}">
     <meta property="article:modified_time" content="${updated}">
