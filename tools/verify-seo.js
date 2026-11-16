@@ -393,6 +393,55 @@ fs.mkdirSync(SHOT_DIR, { recursive: true });
                 smProblems.forEach((p) => console.log(`       - ${p}`));
             }
         }
+
+        /* The RSS feed must be served, be well-formed enough to parse, and
+           list every blog post. A feed that 404s or is empty is worse than
+           no feed at all — it advertises a subscription that never arrives. */
+        {
+            const feedProblems = [];
+            const feedRes = await fetch(BASE + '/feed.xml');
+            const feedBody = feedRes.ok ? await feedRes.text() : '';
+            if (!feedRes.ok) feedProblems.push(`HTTP ${feedRes.status}`);
+            if (!/<rss\b/.test(feedBody)) feedProblems.push('not an RSS document');
+            if (!/<atom:link\b[^>]*rel="self"/.test(feedBody)) {
+                feedProblems.push('no atom:link rel="self"');
+            }
+
+            const items = [...feedBody.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => m[1]);
+            const blogRoutes = ROUTES.filter((r) => r.path.startsWith('/blog/'));
+            if (items.length !== blogRoutes.length) {
+                feedProblems.push(`expected ${blogRoutes.length} <item> entries, found ${items.length}`);
+            }
+            for (const r of blogRoutes) {
+                if (!feedBody.includes(`${ORIGIN}${r.path}`)) {
+                    feedProblems.push(`no <item> linking ${ORIGIN}${r.path}`);
+                }
+            }
+
+            console.log(`FILE ${'/feed.xml'.padEnd(36)} ${feedRes.status} (${items.length} items)`);
+            if (feedProblems.length) {
+                failures += feedProblems.length;
+                feedProblems.forEach((p) => console.log(`       - ${p}`));
+            }
+        }
+
+        /* Every page must advertise the feed, or readers have no way to
+           discover it except by guessing the URL. */
+        {
+            const linkProblems = [];
+            for (const r of ROUTES) {
+                const res = await fetch(BASE + r.path);
+                const html = res.ok ? await res.text() : '';
+                if (!/rel="alternate"[^>]*type="application\/rss\+xml"/.test(html)) {
+                    linkProblems.push(`${r.path} has no <link rel="alternate" type="application/rss+xml">`);
+                }
+            }
+            console.log(`LINK ${'/feed.xml (advertised)'.padEnd(36)} ${linkProblems.length ? linkProblems.length + ' missing' : 'ok'}`);
+            if (linkProblems.length) {
+                failures += linkProblems.length;
+                linkProblems.forEach((p) => console.log(`       - ${p}`));
+            }
+        }
     }
 
     await browser.close();

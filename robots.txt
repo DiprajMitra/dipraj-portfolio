@@ -5,3 +5,6 @@ Allow: /
 # intentionally crawlable and individually indexable.
 
 Sitemap: https://dipraj.bond/sitemap.xml
+
+# Blog RSS feed — generated from the same post registry as the blog pages.
+Feed: https://dipraj.bond/feed.xml

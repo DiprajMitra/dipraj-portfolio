@@ -177,6 +177,7 @@ function renderPage(p, index, bundle) {
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 
     <link rel="canonical" href="${url}">
+    <link rel="alternate" type="application/rss+xml" title="${esc(site.name)}" href="${site.origin}/feed.xml">
 
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="${esc(site.name)}">
@@ -524,6 +525,7 @@ function renderPost(post, index) {
     <link rel="canonical" href="${url}">
     <link rel="alternate" hreflang="en" href="${url}">
     <link rel="alternate" hreflang="x-default" href="${url}">
+    <link rel="alternate" type="application/rss+xml" title="${esc(site.name)}" href="${site.origin}/feed.xml">
 
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="${esc(site.name)}">
@@ -874,6 +876,70 @@ ${POSTS.map((post) => `    <url>
 
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sitemap, 'utf8');
 console.log('wrote public/sitemap.xml');
+
+/* ---------- feed.xml (RSS 2.0, generated from the same post registry) ---------- */
+
+/** XML text nodes: escape the five entities, then drop characters XML 1.0 forbids. */
+const xml = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
+
+/** RFC 822 date, e.g. "Wed, 24 Sep 2026 00:00:00 GMT". */
+const rfc822 = (iso) => {
+    const d = new Date(iso + 'T00:00:00Z');
+    return d.toUTCString();
+};
+
+/**
+ * Flatten a post's block array into readable prose for the feed body.
+ * Full HTML lives on the post page; the feed carries a plain-text summary
+ * so readers can pick it up in any feed reader.
+ */
+function postText(post) {
+    const out = [];
+    for (const b of post.body) {
+        if (b.type === 'p' || b.type === 'h2' || b.type === 'h3' || b.type === 'quote') {
+            out.push(b.text);
+        } else if (b.type === 'ul' || b.type === 'ol') {
+            out.push((b.items || []).join('\n'));
+        } else if (b.type === 'code') {
+            out.push(b.text || '');
+        }
+    }
+    return out.join('\n\n').trim();
+}
+
+const feedItems = POSTS.map((post) => `    <item>
+        <title>${xml(post.metaTitle)}</title>
+        <link>${site.origin}/blog/${post.slug}/</link>
+        <guid isPermaLink="true">${site.origin}/blog/${post.slug}/</guid>
+        <pubDate>${rfc822(post.date)}</pubDate>
+        <category>${xml(post.category || 'Engineering')}</category>
+        <description>${xml(post.metaDescription)}</description>
+        <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/">${xml(postText(post))}</content:encoded>
+    </item>`).join('\n');
+
+const feed = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>${xml(site.name)}</title>
+        <link>${site.origin}/</link>
+        <description>${xml('Writing on software engineering, competitive programming and security — from Dipraj Mitra.')}</description>
+        <language>en</language>
+        <lastBuildDate>${rfc822(TODAY)}</lastBuildDate>
+        <atom:link href="${site.origin}/feed.xml" rel="self" type="application/rss+xml"/>
+${feedItems}
+    </channel>
+</rss>
+`;
+
+fs.writeFileSync(path.join(OUT, 'feed.xml'), feed, 'utf8');
+console.log('wrote public/feed.xml');
 
 console.log(`\n${written} project page(s) written to public/.`);
 
