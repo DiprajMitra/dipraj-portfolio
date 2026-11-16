@@ -163,7 +163,7 @@
             categoryLabel: 'Optimization',
             categoryLabelBn: 'অপটিমাইজেশন',
             repo: 'https://github.com/DiprajMitra/Who-Stays-On',
-            demo: 'https://who-stays-on.vercel.app',
+            demo: 'https://who-stays-on.vercel.app/docs',
             image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80',
             imageAlt: 'Industrial power generator and electrical grid equipment',
             tagline: 'A MILP solver that decides which shops keep the lights on during load shedding.',
@@ -219,7 +219,8 @@
             categoryLabel: 'Database',
             categoryLabelBn: 'ডেটাবেস',
             repo: 'https://github.com/DiprajMitra/stockroom',
-            demo: 'https://stockroom-gold.vercel.app',
+            /* No demo: the stockroom-gold deployment does not serve the app.
+               The repository link above is the way in. */
             image: 'https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=900&q=80',
             imageAlt: 'Warehouse shelves and organised inventory boxes',
             tagline: 'A 3NF inventory system with role-based access enforced in two places.',
